@@ -39,16 +39,26 @@ public class RecipeTemplateLoader implements TemplateLoader{
         
         Fixture.of(Recipe.class).addTemplate("valid03", new Rule(){{
             add("name", "Receita Valida 3");
-            add("price", 2);
-            add("amtCoffee", 2);
-            add("amtMilk", 2);
-            add("amtSugar", 2);
-            add("amtChocolate", 2);            
+            add("price", 3);
+            add("amtCoffee", 3);
+            add("amtMilk", 3);
+            add("amtSugar", 3);
+            add("amtChocolate", 3);            
+            
+        }});
+        
+        Fixture.of(Recipe.class).addTemplate("valid03", new Rule(){{
+            add("name", "Receita Valida 4");
+            add("price", 4);
+            add("amtCoffee", 4);
+            add("amtMilk", 4);
+            add("amtSugar", 4);
+            add("amtChocolate", 4);            
             
         }});
         
         Fixture.of(Recipe.class).addTemplate("valid5UnitsEach", new Rule(){{
-            add("name", "Receita Valida 3");
+            add("name", "Receita 5unid");
             add("price", 5);
             add("amtCoffee", 5);
             add("amtMilk", 5);
@@ -112,6 +122,26 @@ public class RecipeTemplateLoader implements TemplateLoader{
             add("amtChocolate", 1);            
         }});
         
+        Fixture.of(Recipe.class).addTemplate("recipeOnlyChocolate2").inherits("RecipeAllZeroes", new Rule(){{
+            add("name", "allChocolate2");
+            add("amtChocolate", 1);            
+        }});
+        
+        Fixture.of(Recipe.class).addTemplate("recipeDuplicated1").inherits("RecipeAllZeroes", new Rule(){{
+            add("name", "duplicated1");
+            add("amtCoffee", 5);
+            add("amtMilk", 5);
+            add("amtSugar", 5);
+            add("amtChocolate", 5);                        
+        }});
+        
+        Fixture.of(Recipe.class).addTemplate("recipeDuplicated2").inherits("RecipeAllZeroes", new Rule(){{
+            add("name", "duplicated2");
+            add("amtCoffee", 5);
+            add("amtMilk", 5);
+            add("amtSugar", 5);
+            add("amtChocolate", 5);                        
+        }});
     }
     
 }

@@ -2,6 +2,9 @@
 Para instalar a dependência CoffeeMakerTest no maven local:
 mvn install:install-file -Dfile=/home/orlando/Desktop/SIN5022-Testes-De-Software/repository/SIN5022_testes_software/CoffeeMakerTest/lib/CoffeeMaker.jar -DgroupId=each.usp.ach2006.adaptedfromcsc326.eler -DartifactId=coffeeMaker -Dversion=1.0 -Dpackaging=jar
 
+
+ATENÇÃo. Utilizei um framework para criar e reutilizar as fixtures, o FixtureFactory. È como um FactoryGirl do ruby. A dependência foi inserida no pom.xml do maven. Basicamente tenho um arquivo de template java das fixtures e vou reutilizando e alterando conforme cada cenário de teste aparece. Quando tenho q usar uma fixture é so "pedir" pelo nome da fixture ao framework.
+
 # SIN5022_testes_software
 Repository for SIN5022 exercises.
 
@@ -123,20 +126,20 @@ Sempre que não for possível fazer a bebida, o valor pago pelo cliente deve ser
 |---------------------------|---------------------------|--------------------------|------------------------------|
 |checkChocolateInventory    |sem adicionar estoque       |   20 unidades    C1     | 20 < estoque < 20 C2, C3     |
 |addChocolateInventory      |adiciona 10 unidades        |   30 unidades    C4     | 30 < estoque < 30 C5, C6     |
-|checkChocolateInventory    |adicionar as 10 unidades    |   30 unidades    C7     | 30 < estoque < 30 C8, C9     |
+|checkChocolateInventory    |adicionar as 10 unidades    |   30 unidades    C7     | estoque=30 demais 20 C8, C9     |
 |checkCoffeeInventory       |sem adicionar estoque       |   20 unidades    C10    | 20 < estoque < 20 C11, C12   |
 |addCoffeeInventory         |adiciona 10 unidades        |   30 unidades    C13    | 30 < estoque < 30 C14, C15   |
-|checkCoffeeInventory       |adicionar as 10 unidades    |   30 unidades    C16    | 30 < estoque < 30 C17, C18   |
+|checkCoffeeInventory       |adicionar as 10 unidades    |   30 unidades    C16    | estoque=30 demais 20 C17, C18   |
 |checkMilkInventory         |sem adicionar estoque       |   20 unidades    C19    | 20 < estoque < 20 C20, C21   |
 |addMilkInventory           |adiciona 10 unidades        |   30 unidades    C22    | 30 < estoque < 30 C23, C24   |
-|checkMilkInventory         |adicionar as 10 unidades    |   30 unidades    C25    | 30 < estoque < 30 C26, C27   |
+|checkMilkInventory         |adicionar as 10 unidades    |   30 unidades    C25    | estoque=30 demais 20, C27   |
 |checkSugarInventory        |sem adicionar estoque       |   20 unidades    C28    | 20 < estoque < 20 C29, C30   |
 |addSugarInventory          |adiciona 10 unidades        |   30 unidades    C31    | 30 < estoque < 30 C32, C33   |
-|checkSugarInventory        |adicionar as 10 unidades    |   30 unidades    C34    | 30 < estoque < 30 C35, C36   |
+|checkSugarInventory        |adicionar as 10 unidades    |   30 unidades    C34    | estoque=30 demais 20 C35, C36   |
 |addRecipe                  |A receita (nome)            |   3 com nomes diferentes C37 | duas om nomes iguais C38  |
 |addRecipe                  |A receita (qtd)             |   3 com nomes diferentes C37 | 4 receitas    C39        |
-|getRecipes                 |inserir receitas            |   3 com nomes diferentes C37 |                       | *Seria somente um caso de teste? O que colocar aqui?
-|getRecipes                 |inserir receitas            |   3 com nomes diferentes C37 |                       | *Seria somente um caso de teste? O que colocar aqui?   |   |
+|getRecipes                 |inserir receitas            |   3 com nomes diferentes C37 || *Seria somente um caso de teste? O que colocar aqui?
+|getRecipes                 |inserir receitas            |   3 com nomes diferentes C37 || *Seria somente um caso de teste? O que colocar aqui?   |   |
 |deleteRecipe               |inserir receitas antes      |   quantidade Correta C38| Quantidade incorreta C39            |
 |deleteRecipe               |receita                     |   nome existente  C40   | nome inexistente C41, nome nulo C42 |
 |addRecipe                  |receita (quantidades)       |   qtds diferentes  C43  | 2 qtds iguais, 3 qtds iguais    C44 |
@@ -146,31 +149,35 @@ Sempre que não for possível fazer a bebida, o valor pago pelo cliente deve ser
 ### Análise de Valor Limite CoffeeMaker
 |Funcao                     | Entrada                     |  Classes Válidas     | Classes Inválidas                         |
 |---------------------------|-----------------------------|----------------------|-------------------------------------------|
-| addChocolateInventory     |  parametro unico            | 10, 80               | param=0 V1, param=-1 v2, param = 100 v3   |
-| addCoffeeInventory        |  parametro unico            | 10, 80               | param=0 V1, param=-1 v2, param = 100 v3   |
-| addMilkInventory          |  parametro unico            | 10, 80               | param=0 V1, param=-1 v2, param = 100 v3   |
-| addSugarInventory         |  parametro unico            | 10, 80               | param=0 V1, param=-1 v2, param = 100 v3   |
+| addChocolateInventory     |  parametro unico            | 10, 80   v1, v2      | param=0 V3, param=-1 v4, param = 100 v5   |
+| addCoffeeInventory        |  parametro unico            | 10, 80   v6, v7      | param=0 V8, param=-1 v9, param = 100 v10  |
+| addMilkInventory          |  parametro unico            | 10, 80   v11, v12    | param=0 V13, param=-1 v14, param = 100 v15|
+| addSugarInventory         |  parametro unico            | 10, 80   v16, v17    | param=0 V18, param=-1 v19, param = 100 v20|
 
 
-| ID |  Função                   | Entrada          | Oráculo            | Classe de Equivalência ou valor |
-|----|---------------------------|------------------|--------------------|---------------------------------|
-|1   |
-|2   |
-|3   |
-|4   |
-|5   |
-|6   |
-|7   |
-|8   |
-|9   |
-|10  |
-|11  |
-|12  |
-|13  |
-|14  |
-|15  |
-|16  |
-|17  |
-|18  |
-|19  |
-|20  |
+| ID |  Função                   | Entrada                    | Oráculo                 | Classe de Equivalência ou valor        |
+|----|---------------------------|----------------------------|-------------------------|----------------------------------------|
+|1   |checkChocolateInventory    |sem adicionar estoque       |   20 unidades    C1     | 20 < estoque < 20 C2, C3               |
+|2   |addChocolateInventory      |adiciona 10 unidades        |   30 unidades    C4     | 30 < estoque < 30 C5, C6               |
+|3   |checkChocolateInventory    |após adicionar as 10 unidades    |   30 unidades    C7     | estoque=30 demais 20 C8, C9               |
+|4   |checkCoffeeInventory       |sem adicionar estoque       |   20 unidades    C10    | 20 < estoque < 20 C11, C12             |
+|5   |addCoffeeInventory         |adiciona 10 unidades        |   30 unidades    C13    | 30 < estoque < 30 C14, C15             |
+|6   |checkCoffeeInventory       |após adicionar as 10 unidades    |   30 unidades    C16    | estoque=30 demais 20 C17, C18             |
+|7   |checkMilkInventory         |sem adicionar estoque       |   20 unidades    C19    | 20 < estoque < 20 C20, C21             |
+|8   |addMilkInventory           |adiciona 10 unidades        |   30 unidades    C22    | 30 < estoque < 30 C23, C24             |
+|9   |checkMilkInventory         |após adicionar as 10 unidades    |   30 unidades    C25    | estoque=30 demais 20 C26, C27             |
+|10  |checkSugarInventory        |sem adicionar estoque       |   20 unidades    C28    | 20 < estoque < 20 C29, C30             |
+|11  |addSugarInventory          |adiciona 10 unidades        |   30 unidades    C31    | 30 < estoque < 30 C32, C33             |
+|12  |checkSugarInventory        |após adicionar as 10 unidades    |   30 unidades    C34    | estoque=30 demais 20 C35, C36             |
+|13  |addRecipe                  |A receita (nome)            |   3 com nomes diferentes C37 | duas om nomes iguais C38          |
+|14  |addRecipe                  |A receita (qtd)             |   3 com nomes diferentes C37 | 4 receitas    C39                 |
+|15  |getRecipes                 |inserir receitas            |   3 com nomes diferentes C37 |                                   |
+|17  |deleteRecipe               |inserir receitas antes      |   quantidade Correta C38| Quantidade incorreta C39               |
+|18  |deleteRecipe               |receita                     |   nome existente  C40   | nome inexistente C41, nome nulo C42    |
+|19  |addRecipe                  |receita (quantidades)       |   qtds diferentes  C43  | 2 qtds iguais, 3 qtds iguais    C44    |
+|20  |makeCoffee                 |   receita, valor           |  receita existente  C45 | receita inexistente             C46    |
+|21  |makeCoffee                 |   receita, valor           |  valor coerente     C47 | valor menor que o necessário     C48   |
+|22  | addChocolateInventory     |  10, 80  v1, v2            | 20, 100              | param=0 V3, param=-1 v4, param = 100 v5   |
+|23  | addCoffeeInventory        |  parametro unico           | 10, 80   v6, v7      | param=0 V8, param=-1 v9, param = 100 v10  |
+|24  | addMilkInventory          |  parametro unico           | 10, 80   v11, v12    | param=0 V13, param=-1 v14, param = 100 v15|
+|25  | addSugarInventory         |  parametro unico           | 10, 80   v16, v17    | param=0 V18, param=-1 v19, param = 100 v20|
