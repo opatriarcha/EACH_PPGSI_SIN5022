@@ -86,9 +86,12 @@ Deve haver uma forma de saber se a receita foi apagada da máquina ou não.
 
 Reposição
 As unidades de cada ingrediente são representadas por números inteiros e positivos.ok
+
 O limite máximo de estoque para cada ingrediente deve ser de no máximo 100 unidades. ok
+
 Os estoques dos ingredientes só são consumidos na máquina quando uma
 receita é produzida.
+
 A máquina já começa com um estoque de 20 unidades para cada ingrediente. ok
 Deve haver uma forma de saber se o acréscimo de unidades de um ingrediente foi realizado com sucesso. ok
 
@@ -96,31 +99,49 @@ Verificar estoque de ingredientes
 Deve ser possível verificar quantas unidades existem de cada ingrediente. ok
 
 Obter receitas
-Deve ser possível obter todas as receitas cadastradas na máquina
+Deve ser possível obter todas as receitas cadastradas na máquina ok
+
+Preparar Receita
+Uma receita deve ser preparada de acordo com a seleção de um usuário e de um valor inserido em
+centavos para pagar pela bebida.
+
+Se a receita existe, e o valor pago é o suficiente, então a bebida deve ser
+feita, as unidades utilizadas para fazer a bebida devem ser subtraídas do estoque de cada ingrediente, e o
+troco (se houver) deve ser retornado para o cliente.
+
+Se o cliente não inserir dinheiro suficiente, a bebida
+não deve ser feita e o cliente deve saber que o valor foi insuficiente. ok
+
+Se a quantidade de ingredientes na
+máquina não for o suficiente para fazer a receita, a receita não deve ser feita e o cliente deve ser avisado
+do motivo. ok
+
+Sempre que não for possível fazer a bebida, o valor pago pelo cliente deve ser devolvido. ok
 
 ### Análise de Classes de Equivalência CoffeeMaker
-|Funcao                     | Entrada                   | Classes Válidas          | Classes Inválidas     |
-|---------------------------|---------------------------|--------------------------|-----------------------|
-|checkChocolateInventory    |sem adicionar estoque       |   20 unidades           | 20 < estoque < 20     |
-|addChocolateInventory      |adiciona 10 unidades        |   30 unidades           | 30 < estoque < 30     |
-|checkChocolateInventory    |adicionar as 10 unidades    |   30 unidades           | 30 < estoque < 30     |
-|checkCoffeeInventory       |sem adicionar estoque       |   20 unidades           | 20 < estoque < 20     |
-|addCoffeeInventory         |adiciona 10 unidades        |   30 unidades           | 30 < estoque < 30     |
-|checkCoffeeInventory       |adicionar as 10 unidades    |   30 unidades           | 30 < estoque < 30     |
-|checkMilkInventory         |sem adicionar estoque       |   20 unidades           | 20 < estoque < 20     |
-|addMilkInventory           |adiciona 10 unidades        |   30 unidades           | 30 < estoque < 30     |
-|checkMilkInventory         |adicionar as 10 unidades    |   30 unidades           | 30 < estoque < 30     |
-|checkSugarInventory        |sem adicionar estoque       |   20 unidades           | 20 < estoque < 20     |
-|addSugarInventory          |adiciona 10 unidades        |   30 unidades           | 30 < estoque < 30     |
-|checkSugarInventory        |adicionar as 10 unidades    |   30 unidades           | 30 < estoque < 30     |
-|addRecipe                  |A receita (nome)            |   3 com nomes diferentes| duas om nomes iguais  |
-|addRecipe                  |A receita (qtd)             |   3 com nomes diferentes| 4 receitas            |
-|getRecipes                 |inserir receitas            |   3 com nomes diferentes|                       | *Seria somente um caso de teste? O que colocar aqui?
-|getRecipes                 |inserir receitas            |   3 com nomes diferentes|                       | *Seria somente um caso de teste? O que colocar aqui?   |   |
-|deleteRecipe               |inserir receitas antes      |   quantidade Correta    | Quantidade incorreta  |
-|deleteRecipe               |receita                     |   nome existente        | nome inexistente, nome nulo  |
-|addRecipe                  |receita (quantidades)       |   qtds diferentes       | 2 qtds iguais, 3 qtds iguais |
-
+|Funcao                     | Entrada                   | Classes Válidas          | Classes Inválidas            |
+|---------------------------|---------------------------|--------------------------|------------------------------|
+|checkChocolateInventory    |sem adicionar estoque       |   20 unidades    C1     | 20 < estoque < 20 C2, C3     |
+|addChocolateInventory      |adiciona 10 unidades        |   30 unidades    C4     | 30 < estoque < 30 C5, C6     |
+|checkChocolateInventory    |adicionar as 10 unidades    |   30 unidades    C7     | 30 < estoque < 30 C8, C9     |
+|checkCoffeeInventory       |sem adicionar estoque       |   20 unidades    C10    | 20 < estoque < 20 C11, C12   |
+|addCoffeeInventory         |adiciona 10 unidades        |   30 unidades    C13    | 30 < estoque < 30 C14, C15   |
+|checkCoffeeInventory       |adicionar as 10 unidades    |   30 unidades    C16    | 30 < estoque < 30 C17, C18   |
+|checkMilkInventory         |sem adicionar estoque       |   20 unidades    C19    | 20 < estoque < 20 C20, C21   |
+|addMilkInventory           |adiciona 10 unidades        |   30 unidades    C22    | 30 < estoque < 30 C23, C24   |
+|checkMilkInventory         |adicionar as 10 unidades    |   30 unidades    C25    | 30 < estoque < 30 C26, C27   |
+|checkSugarInventory        |sem adicionar estoque       |   20 unidades    C28    | 20 < estoque < 20 C29, C30   |
+|addSugarInventory          |adiciona 10 unidades        |   30 unidades    C31    | 30 < estoque < 30 C32, C33   |
+|checkSugarInventory        |adicionar as 10 unidades    |   30 unidades    C34    | 30 < estoque < 30 C35, C36   |
+|addRecipe                  |A receita (nome)            |   3 com nomes diferentes C37 | duas om nomes iguais C38  |
+|addRecipe                  |A receita (qtd)             |   3 com nomes diferentes C37 | 4 receitas    C39        |
+|getRecipes                 |inserir receitas            |   3 com nomes diferentes C37 |                       | *Seria somente um caso de teste? O que colocar aqui?
+|getRecipes                 |inserir receitas            |   3 com nomes diferentes C37 |                       | *Seria somente um caso de teste? O que colocar aqui?   |   |
+|deleteRecipe               |inserir receitas antes      |   quantidade Correta C38| Quantidade incorreta C39            |
+|deleteRecipe               |receita                     |   nome existente  C40   | nome inexistente C41, nome nulo C42 |
+|addRecipe                  |receita (quantidades)       |   qtds diferentes  C43  | 2 qtds iguais, 3 qtds iguais    C44 |
+|makeCoffee                 |   receita, valor           |  receita existente  C45 | receita inexistente             C46 |
+|makeCoffee                 |   receita, valor           |  valor coerente     C47 | valor menor que o necessário     C48|
 
 ### Análise de Valor Limite CoffeeMaker
 |Funcao                     | Entrada                     |  Classes Válidas     | Classes Inválidas                         |
@@ -129,3 +150,27 @@ Deve ser possível obter todas as receitas cadastradas na máquina
 | addCoffeeInventory        |  parametro unico            | 10, 80               | param=0 V1, param=-1 v2, param = 100 v3   |
 | addMilkInventory          |  parametro unico            | 10, 80               | param=0 V1, param=-1 v2, param = 100 v3   |
 | addSugarInventory         |  parametro unico            | 10, 80               | param=0 V1, param=-1 v2, param = 100 v3   |
+
+
+| ID |  Função                   | Entrada          | Oráculo            | Classe de Equivalência ou valor |
+|----|---------------------------|------------------|--------------------|---------------------------------|
+|1   |
+|2   |
+|3   |
+|4   |
+|5   |
+|6   |
+|7   |
+|8   |
+|9   |
+|10  |
+|11  |
+|12  |
+|13  |
+|14  |
+|15  |
+|16  |
+|17  |
+|18  |
+|19  |
+|20  |
