@@ -181,3 +181,24 @@ Sempre que não for possível fazer a bebida, o valor pago pelo cliente deve ser
 |23  | addCoffeeInventory        |  parametro unico           | 10, 80   v6, v7      | param=0 V8, param=-1 v9, param = 100 v10  |
 |24  | addMilkInventory          |  parametro unico           | 10, 80   v11, v12    | param=0 V13, param=-1 v14, param = 100 v15|
 |25  | addSugarInventory         |  parametro unico           | 10, 80   v16, v17    | param=0 V18, param=-1 v19, param = 100 v20|
+
+
+#### Considerações acerca da especificação
+* Desorganização da especificação. Parte dos requisitos na definição dos métodos e parte em texto livre.
+* A especificação é ambígua em alguns poucos pontos
+* A especificação não diz exatamente quais as exceções são lançadas  nem quais mensagens eatamente devem ser exibidas na exceção.
+* As considerações acima são de cunho pessoais, não acredito que exista uma maneira única de se documentar algo em software.
+
+#### Erros graves encontrados
+* A aplicação, ao contrário da especificação não permite 100 unidades de determinado ingrediente. Me parece que permite exatamente 99 no máximo;
+* Ao se inserir açucar no inventário, é afetado o estoque de chocolate, ao que parece. Mas o oposto não é verdade.
+* Ao se deletar receitas, ao que parece a primeira receita deletada gera erro. Porém as outras são deletadas normalmente, desde que não esteja em loop, pois gera exceção.
+* A aplicação permite 4 receitas, ao invés de 3 como na especificação, mas nao suporta 5 receitas. O numero mágico é 4.
+* Outros erros foram encontrados de maneira adhoc, mas não consegui investigar todos. Um exemplo é a quantidade total de estoque máximo de ingredientes. Permitiu mais de 400( 100 unidades de cada insumo * 4 insumos), mas ao inserir 1000 não permitiu. Nao descobri o numero mágico, e não sei se realmente importa descobrir, pela ótica do testador funcional.
+
+
+#### Considerações acerca do exercício ( FORA DE ESCOPO )
+* Asserts do Junit geram exceção e são controlados pelo framework por estas. Eu não tinha percebido isso até agora pouco. Então os métodos de teste que tem mais de um assert devem funcionar da seguinte maneira, a meu ver. Assert múltiplos e encadeados devem ser usados para garatir que no último assert, todos os passos de montagem do cenário de teste estejam concluidos e válidos. Porém utilizar vários asserts para agrupar regras como eu estou fazendo é muito errado. ( corrigir depois )
+* Me confundi várias vezes ao preencher as colunas das tabelas do cenários de eeuivalência e valor limite. Quando tudo parte de um cenário de entrada e ou de uma combinação de entradas ( como no exercício de geometria por exemplo ) fica fácil. Mas quando existem uma serie depassos e verificações para construir um cenário de teste eu ainda me confundo bastante.
+* alguns cenários de teste são fáceis de se confundir se fazem parte dos cenários de equivalência ou de valor limite, preciso rever para entender o por que eu me confundo, ou se realmente eles se chocam em alguns momentos.
+* As vezes, ou várias vezes, para se chegar a um cenário de teste, se constroi um roteiro ja coberto por etapas anteriores. Isso talvez faça parte da analise de classes de equivalência, uma vez que se eu não respeitá-la acabo testando varias vezes o mesmo cenário. Isso me leva a crer que alguns desses cenários devam ser encadeados de alguma maneira, ou agrupados e mais de duas dimensões... ( pensar sobre aqui durante a semana )...
