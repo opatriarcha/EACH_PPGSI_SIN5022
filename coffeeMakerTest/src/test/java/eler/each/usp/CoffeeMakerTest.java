@@ -10,6 +10,8 @@ import br.com.six2six.fixturefactory.loader.FixtureFactoryLoader;
 import each.usp.ach2006.adaptedfromcsc326.eler.CoffeeMaker;
 import each.usp.ach2006.adaptedfromcsc326.eler.Recipe;
 import each.usp.ach2006.adaptedfromcsc326.eler.exceptions.DuplicatedRecipeException;
+import each.usp.ach2006.adaptedfromcsc326.eler.exceptions.InsufficientAmountOfMoneyException;
+import each.usp.ach2006.adaptedfromcsc326.eler.exceptions.InvalidValueException;
 import each.usp.ach2006.adaptedfromcsc326.eler.exceptions.RecipeException;
 import junit.framework.TestCase;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -158,13 +160,174 @@ public class CoffeeMakerTest  extends TestCase{
         assertThrows(DuplicatedRecipeException.class, () -> cm.addRecipe(gimmeRecipe("recipeDuplicated2")));         
         
     }
+   
+    //ID 20  |makeCoffee                 |   receita, valor           |  receita existente  C45 | receita inexistente             C46    |
+    @Test
+    public void testShouldMakeRecipesExistents () throws Exception{
+        CoffeeMaker cm = new CoffeeMaker();
+        assertTrue(cm.addRecipe(gimmeRecipe("valid01")));        
+        assertEquals(1, cm.makeCoffee(gimmeRecipe("valid01").getName(), 5));
+    }
     
-    |20  |makeCoffee                 |   receita, valor           |  receita existente  C45 | receita inexistente             C46    |
-|21  |makeCoffee                 |   receita, valor           |  valor coerente     C47 | valor menor que o necessário     C48   |
-|22  | addChocolateInventory     |  parametro unico           | 10, 80   v1, v2      | param=0 V3, param=-1 v4, param = 100 v5   |
-|23  | addCoffeeInventory        |  parametro unico           | 10, 80   v6, v7      | param=0 V8, param=-1 v9, param = 100 v10  |
-|24  | addMilkInventory          |  parametro unico           | 10, 80   v11, v12    | param=0 V13, param=-1 v14, param = 100 v15|
-|25  | addSugarInventory         |  parametro unico           | 10, 80   v16, v17    | param=0 V18, param=-1 v19, param = 100 v20|
+    //ID 20  |makeCoffee                 |   receita, valor           |  receita existente  C45 | receita inexistente             C46    |
+    @Test
+    public void testShouldNotMakeRecipesInexistents () throws Exception{
+        CoffeeMaker cm = new CoffeeMaker();
+        assertTrue(cm.addRecipe(gimmeRecipe("recipeDuplicated1")));        
+        assertThrows(RecipeException.class, () -> cm.makeCoffee("inexistente", 10));                                
+    }
+    
+    //ID 21  |makeCoffee                 |   receita, valor           |  valor coerente     C47 | valor menor que o necessário     C48   |
+    @Test
+    public void testShouldNotMakeRecipesWithoutCorrectAmountOfMoney () throws Exception{
+        CoffeeMaker cm = new CoffeeMaker();
+        assertTrue(cm.addRecipe(gimmeRecipe("valid01")));        
+        assertEquals(1, cm.makeCoffee(gimmeRecipe("valid01").getName(), 5));
+        assertThrows(InsufficientAmountOfMoneyException.class, () -> cm.makeCoffee(gimmeRecipe("valid01").getName(), 1));                                
+    }
+
+    //ID 22  | addChocolateInventory     |  parametro unico           | 10, 80   v1, v2      | param=0 V3, param=-1 v4, param = 100 v5   |
+    @Test
+    public void testChocolateInventoryAddAndCheckLimits() throws Exception{ //ERRO não permitiu 100 unidades
+        CoffeeMaker cm = new CoffeeMaker();
+        assertEquals( cm.checkChocolateInventory(), 20);        
+        cm.addChocolateInventory(80);
+        assertEquals( cm.checkChocolateInventory(), 100);        
+        assertEquals( cm.checkCoffeeInventory(), 20);
+        assertEquals( cm.checkMilkInventory(), 20);
+        assertEquals( cm.checkSugarInventory(), 20);
+    }
+    
+    //ID 22  | addChocolateInventory     |  parametro unico           | 10, 80   v1, v2      | param=0 V3, param=-1 v4, param = 100 v5   |
+    @Test
+    public void testChocolateInventoryAddAndCheckOverLimits() throws Exception{
+        CoffeeMaker cm = new CoffeeMaker();
+        assertEquals( cm.checkChocolateInventory(), 20);        
+        assertThrows(InvalidValueException.class, () -> cm.addChocolateInventory(100));
+        assertEquals( cm.checkChocolateInventory(), 20);        
+        assertEquals( cm.checkCoffeeInventory(), 20);
+        assertEquals( cm.checkMilkInventory(), 20);
+        assertEquals( cm.checkSugarInventory(), 20);
+    }
+    
+    //ID 22  | addChocolateInventory     |  parametro unico           | 10, 80   v1, v2      | param=0 V3, param=-1 v4, param = 100 v5   |
+    public void testChocolateInventoryAddAndCheckOverLimitsNegative() throws Exception{
+        CoffeeMaker cm = new CoffeeMaker();
+        assertEquals( cm.checkChocolateInventory(), 20);        
+        assertThrows(InvalidValueException.class, () -> cm.addChocolateInventory(-1));
+        assertEquals( cm.checkChocolateInventory(), 20);        
+        assertEquals( cm.checkCoffeeInventory(), 20);
+        assertEquals( cm.checkMilkInventory(), 20);
+        assertEquals( cm.checkSugarInventory(), 20);
+    }
+    
+    //ID 23  | addCoffeeInventory        |  parametro unico           | 10, 80   v6, v7      | param=0 V8, param=-1 v9, param = 100 v10  |
+    @Test
+    public void testCoffeeInventoryAddAndCheckLimits() throws Exception{ //ERRO não permitiu 100 unidades
+        CoffeeMaker cm = new CoffeeMaker();
+        assertEquals( cm.checkCoffeeInventory(), 20);        
+        cm.addCoffeeInventory(80);
+        assertEquals( cm.checkCoffeeInventory(), 100);        
+        assertEquals( cm.checkChocolateInventory(), 20);
+        assertEquals( cm.checkMilkInventory(), 20);
+        assertEquals( cm.checkSugarInventory(), 20);
+    }
+    
+    //ID 23  | addCoffeeInventory        |  parametro unico           | 10, 80   v6, v7      | param=0 V8, param=-1 v9, param = 100 v10  |
+    @Test
+    public void testCoffeeInventoryAddAndCheckOverLimits() throws Exception{
+        CoffeeMaker cm = new CoffeeMaker();
+        assertEquals( cm.checkCoffeeInventory(), 20);        
+        assertThrows(InvalidValueException.class, () -> cm.addCoffeeInventory(100));
+        assertEquals( cm.checkChocolateInventory(), 20);        
+        assertEquals( cm.checkCoffeeInventory(), 20);
+        assertEquals( cm.checkMilkInventory(), 20);
+        assertEquals( cm.checkSugarInventory(), 20);
+    }
+    
+    //ID 23  | addCoffeeInventory        |  parametro unico           | 10, 80   v6, v7      | param=0 V8, param=-1 v9, param = 100 v10  |
+    public void testCoffeeInventoryAddAndCheckOverLimitsNegative() throws Exception{
+        CoffeeMaker cm = new CoffeeMaker();
+        assertEquals( cm.checkCoffeeInventory(), 20);        
+        assertThrows(InvalidValueException.class, () -> cm.addCoffeeInventory(-1));
+        assertEquals( cm.checkChocolateInventory(), 20);        
+        assertEquals( cm.checkCoffeeInventory(), 20);
+        assertEquals( cm.checkMilkInventory(), 20);
+        assertEquals( cm.checkSugarInventory(), 20);
+    }
+    
+    //ID 24  | addMilkInventory          |  parametro unico           | 10, 80   v11, v12    | param=0 V13, param=-1 v14, param = 100 v15|
+    @Test
+    public void testMilkInventoryAddAndCheckLimits() throws Exception{ //ERRO não permitiu 100 unidades
+        CoffeeMaker cm = new CoffeeMaker();
+        assertEquals( cm.checkMilkInventory(), 20);        
+        cm.addMilkInventory(80);
+        assertEquals( cm.checkCoffeeInventory(), 20);        
+        assertEquals( cm.checkChocolateInventory(), 20);
+        assertEquals( cm.checkMilkInventory(), 100);
+        assertEquals( cm.checkSugarInventory(), 20);
+    }
+    
+    //ID 24  | addMilkInventory          |  parametro unico           | 10, 80   v11, v12    | param=0 V13, param=-1 v14, param = 100 v15|
+    @Test
+    public void testMilkInventoryAddAndCheckOverLimits() throws Exception{
+        CoffeeMaker cm = new CoffeeMaker();
+        assertEquals( cm.checkCoffeeInventory(), 20);        
+        assertThrows(InvalidValueException.class, () -> cm.addMilkInventory(100));
+        assertEquals( cm.checkChocolateInventory(), 20);        
+        assertEquals( cm.checkCoffeeInventory(), 20);
+        assertEquals( cm.checkMilkInventory(), 20);
+        assertEquals( cm.checkSugarInventory(), 20);
+    }
+    
+    //ID 24  | addMilkInventory          |  parametro unico           | 10, 80   v11, v12    | param=0 V13, param=-1 v14, param = 100 v15|
+    public void testMilkInventoryAddAndCheckOverLimitsNegative() throws Exception{
+        CoffeeMaker cm = new CoffeeMaker();
+        assertEquals( cm.checkMilkInventory(), 20);        
+        assertThrows(InvalidValueException.class, () -> cm.addMilkInventory(-1));
+        assertEquals( cm.checkChocolateInventory(), 20);        
+        assertEquals( cm.checkCoffeeInventory(), 20);
+        assertEquals( cm.checkMilkInventory(), 20);
+        assertEquals( cm.checkSugarInventory(), 20);
+    }
+    
+    //ID 25  | addSugarInventory         |  parametro unico           | 10, 80   v16, v17    | param=0 V18, param=-1 v19, param = 100 v20|
+    @Test
+    public void testSugarInventoryAddAndCheckLimits() throws Exception{ //ERRO não permitiu 100 unidades
+        CoffeeMaker cm = new CoffeeMaker();
+        assertEquals( cm.checkSugarInventory(), 20);        
+        cm.addSugarInventory(80);
+        assertEquals( cm.checkCoffeeInventory(), 20);        
+        assertEquals( cm.checkChocolateInventory(), 20);
+        assertEquals( cm.checkMilkInventory(), 20);
+        assertEquals( cm.checkSugarInventory(), 100);
+    }
+    
+    //ID 25  | addSugarInventory         |  parametro unico           | 10, 80   v16, v17    | param=0 V18, param=-1 v19, param = 100 v20|
+    @Test
+    public void testSugarInventoryAddAndCheckOverLimits() throws Exception{
+        CoffeeMaker cm = new CoffeeMaker();
+        assertEquals( cm.checkSugarInventory(), 20);        
+        assertThrows(InvalidValueException.class, () -> cm.addSugarInventory(100));
+        assertEquals( cm.checkChocolateInventory(), 20);        
+        assertEquals( cm.checkCoffeeInventory(), 20);
+        assertEquals( cm.checkMilkInventory(), 20);
+        assertEquals( cm.checkSugarInventory(), 20);
+    }
+    
+    //ID 25  | addSugarInventory         |  parametro unico           | 10, 80   v16, v17    | param=0 V18, param=-1 v19, param = 100 v20|
+    public void testSugarInventoryAddAndCheckOverLimitsNegative() throws Exception{
+        CoffeeMaker cm = new CoffeeMaker();
+        assertEquals( cm.checkSugarInventory(), 20);        
+        assertThrows(InvalidValueException.class, () -> cm.addSugarInventory(-1));
+        assertEquals( cm.checkChocolateInventory(), 20);        
+        assertEquals( cm.checkCoffeeInventory(), 20);
+        assertEquals( cm.checkMilkInventory(), 20);
+        assertEquals( cm.checkSugarInventory(), 20);
+    }
+
+
+
     /**
      * Return the correct Fixture or translate the inner exception.
      * @param fixtureName The fixture name from template
