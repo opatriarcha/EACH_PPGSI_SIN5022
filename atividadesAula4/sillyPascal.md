@@ -1,23 +1,5 @@
 #markdown
 
-![Alt text](https://g.gravizo.com/svg?
-  digraph G {
-    aize = 4,4 ;
-    main [shape=box];
-    main -> parse [weight=8];
-    parse -> execute;
-    main -> init [style=dotted];
-    main -> cleanup;
-    execute -> { make_string; printf}
-    init -> make_string;
-    edge [color=red];
-    main -> printf [style=bold,label= 100 times ];
-    make_string [label= make a string ];
-    node [shape=box,style=filled,color= .7 .3 1.0 ];
-    execute -> compare;
-  }
-)
-
 <img src='https://g.gravizo.com/svg?
  digraph G {
  V1 -> V2
@@ -70,8 +52,8 @@ Quantidade de Caminhos Básicos: 7
 |2   | ""               | V1, V2, V2a, V3, VX                                   |
 |3   | abcdefgh         | V1, V2, V2a, V2b, V3, VX                              |
 |4   | 6abcd            | V1, V2, V2a, V2b, V4, V5, VX                          |
-|5   |                  | V1, V2, V2a, V2b, V4, V6, V6a, V7, VX                 |
-|6   |                  | V1, V2, V2a, V2b, V4, V6, V6a, V6b, V7, VX            |
-|7   |                  | V1, V2, V2a, V2b, V4, V6, V6a, V6b, V8, VX            |
+|5   | a$bcde           | V1, V2, V2a, V2b, V4, V6, V6a, V7, VX                 |
+|6   | a4bcde           | V1, V2, V2a, V2b, V4, V6, V6a, V6b, V7, VX            |
+|7   | abcde            | V1, V2, V2a, V2b, V4, V6, V6a, V6b, V8, VX            |
 
 espaços em branco?

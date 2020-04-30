@@ -29,8 +29,25 @@ public class IdentifierTest {
     
     //ID4
     @Test
-    public void startWithDigitShouldReturnFalse(){        
-        Assertions.assertFalse(Identifier.validaIdentificador("6abcd"));        
+    public void startWithDigitShouldReturnFalse(){
+        Assertions.assertFalse(Identifier.validaIdentificador("6abcd"));
     }
-    
+
+    //ID5
+    @Test
+    public void aCharacterNonAlphabeticShouldReturnFalse(){
+        Assertions.assertFalse(Identifier.validaIdentificador("a$bcde"));
+    }
+
+    //ID6
+    @Test
+    public void aDigitInTheIdentifierShouldReturnFalse(){
+        Assertions.assertFalse(Identifier.validaIdentificador("a4bcde"));
+    }
+
+    //ID7
+    @Test
+    public void aFullCorrectIdentifierShouldReturnTrue(){
+        Assertions.assertTrue(Identifier.validaIdentificador("abcde"));
+    }
 }
