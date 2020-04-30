@@ -1,30 +1,29 @@
 #markdown
 
+
 <img src='https://g.gravizo.com/svg?
  digraph G {
- V1 -> V2
- V2 -> VX
- V1 -> V2a
- V2a -> V3
- V2a-> V2b
- V2b -> V3
- V3 -> VX
- V3 -> V4
- V4 -> V5
- V5 -> VX
- V4 -> V6
-
- V6 -> V6a
- V6a -> V7
- V6a -> V6
- V7 -> VX
- V6a -> V6b
- V6b -> V6
- V6b -> V7
- V7 -> VX
- V6 -> V8
- V8 -> VX
-
+ V1 -> V2;
+ V2 -> VX;
+ V1 -> V2a;
+ V2a -> V3;
+ V2a-> V2b;
+ V2b -> V3;
+ V3 -> VX;
+ V3 -> V4;
+ V4 -> V5;
+ V5 -> VX;
+ V4 -> V6;
+ V6 -> V6a;
+ V6a -> V7;
+ V6a -> V6;
+ V7 -> VX;
+ V6a -> V6b;
+ V6b -> V6;
+ V6b -> V7;
+ V7 -> VX;
+ V6 -> V8;
+ V8 -> VX;
  }
 '/>
 
