@@ -13,6 +13,8 @@ import org.jgrapht.graph.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
 
 /**
  * A demo applet that shows how to use JGraphX to visualize JGraphT graphs. Applet based on
@@ -59,23 +61,64 @@ public class JGraphXAdapterDemo extends JApplet
         setPreferredSize(DEFAULT_SIZE);
         mxGraphComponent component = new mxGraphComponent(jgxAdapter);
         component.setConnectable(false);
-        component.getGraph().setAllowDanglingEdges(true);
+        component.getGraph().setAllowDanglingEdges(false);
+        component.getGraph().setAllowLoops(true);
         getContentPane().add(component);
         resize(DEFAULT_SIZE);      
 
         // add some sample data (graph manipulated via JGraphX)
-        g.addVertex("v1");        
-        g.addEdge(v1, v2);
+        g.addVertex("V1");
+        g.addVertex("V2");
+        g.addVertex("V2a");
+        g.addVertex("V2b");
+        g.addVertex("V3");
+        g.addVertex("V4");
+        g.addVertex("V5");
+        g.addVertex("V6");
+        g.addVertex("V6a");
+        g.addVertex("V6b");
+        g.addVertex("V7");
+        g.addVertex("V8");
+        g.addVertex("VX");
+        
+        g.addEdge("V1", "V2");
+        g.addEdge("V2", "VX");
+        g.addEdge("V1", "V2a");
+        
+        g.addEdge("V2a", "V3");
+        g.addEdge("V3", "VX");
+        
+        g.addEdge("V2b", "V3");
+        g.addEdge("V3", "VX");
+        
+        g.addEdge("V4", "V5");
+        g.addEdge("V5", "VX");
+        
+        g.addEdge("V6", "V6a");
+        g.addEdge("V6a", "V7");
+        g.addEdge("V7", "VX");
+        
+        g.addEdge("V6", "V6a");
+        g.addEdge("V6a", "V6b");
+        g.addEdge("V6b", "V7");
+        g.addEdge("V7", "VX");
+        
+        g.addEdge("V6", "V6a");
+        g.addEdge("V6a", "V6b");
+        g.addEdge("V6b", "V8");
+        g.addEdge("V8", "VX");
+                                       
+
        
         // positioning via jgraphx layouts
-        mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
+        mxFastOrganicLayout layout = new mxFastOrganicLayout(jgxAdapter);
 
         // center the circle
         int radius = 100;
-        layout.setX0((DEFAULT_SIZE.width / 2.0) - radius);
-        layout.setY0((DEFAULT_SIZE.height / 2.0) - radius);
-        layout.setRadius(radius);
-        layout.setMoveCircle(true);
+//        layout.setX0((DEFAULT_SIZE.width / 2.0) - radius);
+//        layout.setY0((DEFAULT_SIZE.height / 2.0) - radius);
+//        layout.setRadius(radius);
+//        layout.setMoveCircle(true);
 
         layout.execute(jgxAdapter.getDefaultParent());
         // that's all there is to it!...
