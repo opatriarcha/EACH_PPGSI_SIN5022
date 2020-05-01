@@ -36,7 +36,7 @@ Repository for SIN5022 exercises.
 
 ### Análise de Valor Limite
 | Entrada                     |  Classes Válidas | Classes Inválidas     |
-|-----------------------------|-----------------|-----------------------|
+|-----------------------------|-----------------|------------------------|
 |Dominio (I, V, X, L, C, D, M)|   O DOMINIO (V1)| qualquer algarismo fora do dominio  |
 
 

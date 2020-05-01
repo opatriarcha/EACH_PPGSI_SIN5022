@@ -1,7 +1,8 @@
-package sillypascal;
+package br.com.each.ppgsi.testesDeSoftware.sillypascal;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import sillypascal.Identifier;
 
 public class IdentifierTest {
 
