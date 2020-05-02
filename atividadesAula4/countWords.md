@@ -57,3 +57,38 @@ são usadas sempre”, 3)
 * Isso ocorreu na primeira tentativa. Mas há de se considerar que existem testes nos casos de teste que talvez não respeitem
 * a tecnica de classes de equivalência ou valor limite. (É uma dúvida, inlusive);
 * Nesses testes em questão, eu imaginei que alguém poderia ter escrito de alguma amneira diferente o cídigo e quis testar o ID 10 e 11, por exemplo.
+
+
+## Exercicio 2 - Parte B
+
+## Grafo
+<img src='https://g.gravizo.com/svg?
+ digraph G {
+   V1 -> V2;
+   V1 -> V3;
+   V2 -> VX;
+   V3 -> V4;
+   V4 -> V5;
+   V5 -> V7;
+   V7 -> V8;
+   V8 -> V9;
+   V9 -> V3;
+   V9 -> V16
+   V16 -> VX;
+   V5 -> V6;
+   V6 -> V7;
+   V6 -> V9;
+   V4 -> V10;
+   V10 -> V11;
+   V11 -> V12;
+   V11 -> V3;
+   V12 -> V14;
+   V14 -> V15;
+   V15 -> V16;
+   V16 -> VX;
+   V12 -> V13;
+   V13 -> V14;
+ }
+'/>
+
+#### Onde VX é a saída do programa.
