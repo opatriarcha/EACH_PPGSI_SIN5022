@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CountWordsTest {
-    
+
     private CountWords subject = new CountWords();
 
     //ID1 and ID7
@@ -18,12 +18,6 @@ public class CountWordsTest {
     @Test
     public void emptyInputMustreturn0(){
         assertEquals(0, subject.countWords(""));
-    }
-
-    //ID11
-    @Test
-    public void emptyTwoSpacesInputMustreturn0(){
-        assertEquals(0, subject.countWords("  "));
     }
 
     //ID3
@@ -61,7 +55,11 @@ public class CountWordsTest {
     public void rAndSWithSpaceMustReturn0(){
         assertEquals(0, subject.countWords("r s"));
     }
-
+    //ID11
+    @Test
+    public void emptyTwoSpacesInputMustreturn0(){
+        assertEquals(0, subject.countWords("  "));
+    }
 
 }
 

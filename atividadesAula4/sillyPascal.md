@@ -55,4 +55,7 @@
 |6   | a4bcde           | V1, V2, V2a, V2b, V4, V6, V6a, V6b, V7, VX            |
 |7   | abcde            | V1, V2, V2a, V2b, V4, V6, V6a, V6b, V8, VX            |
 
-### o ID 6 representa um caminho pelo qual o sistema nunca irá passar. mais especificamente nna instrução conflitante V6b
+* *** Observação 1: ***  O ID 6 representa um caminho pelo qual o sistema nunca irá passar. mais especificamente nna instrução conflitante V6b
+
+
+* *** Observação 2: ***  Verifiquei depois de terminar a atividade que o codigo sillyPascal desta atividade é ligeiramente diferente da atividade anterior. Como eu utilizei por conveniência o código da atividade anterior deve dar alguma diferença nos caminhos, pois não verifiquei o mesmo erro na outra implementação.

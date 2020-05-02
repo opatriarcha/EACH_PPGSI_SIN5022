@@ -2,7 +2,7 @@
 <html>
   <head>
       <meta charset="utf-8" />
-      <title>sillyPascal</title>
+      <title>countWords</title>
       <style>.markdown-preview:not([data-use-github-style]) { padding: 2em; font-size: 1.2em; color: rgb(171, 178, 191); background-color: rgb(40, 44, 52); overflow: auto; }
 .markdown-preview:not([data-use-github-style]) > :first-child { margin-top: 0px; }
 .markdown-preview:not([data-use-github-style]) h1, .markdown-preview:not([data-use-github-style]) h2, .markdown-preview:not([data-use-github-style]) h3, .markdown-preview:not([data-use-github-style]) h4, .markdown-preview:not([data-use-github-style]) h5, .markdown-preview:not([data-use-github-style]) h6 { line-height: 1.2; margin-top: 1.5em; margin-bottom: 0.5em; color: rgb(255, 255, 255); }
@@ -533,104 +533,243 @@ pre.editor-colors .fold-marker:after {
 }
 </style>
   </head>
-  <body class='markdown-preview' data-use-github-style><h3 id="exercicio-sillypascal">Exercicio SillyPascal</h3>
-<h2 id="grafo">Grafo</h2>
-<p><img src="https://g.gravizo.com/svg?&#10; digraph G {&#10; V1 -&gt; V2;&#10; V2 -&gt; VX;&#10; V1 -&gt; V2a;&#10; V2a -&gt; V3;&#10; V2a-&gt; V2b;&#10; V2b -&gt; V3;&#10; V3 -&gt; VX;&#10; V3 -&gt; V4;&#10; V4 -&gt; V5;&#10; V5 -&gt; VX;&#10; V4 -&gt; V6;&#10; V6 -&gt; V6a;&#10; V6a -&gt; V7;&#10; V6a -&gt; V6;&#10; V7 -&gt; VX;&#10; V6a -&gt; V6b;&#10; V6b -&gt; V6;&#10; V6b -&gt; V7;&#10; V7 -&gt; VX;&#10; V6 -&gt; V8;&#10; V8 -&gt; VX;&#10; }"></p>
-<p><strong>Quantidade de Nós:</strong> 13 nós contando o nó de saída. (VX) <br>
-<strong>Nós:</strong> V1, V2, V2a, V2b, V3, V4, V5, V6, V6a, V6b, V7, V8, VX <br>
-<strong>Quantidade de arestas:</strong> 21 <br>
-<strong>Arestas:</strong> (V1, V2), (V2, VX), (V1, V2a), (V2a, V3), (V2a-&gt; V2b), (V2b, V3), (V3, VX), (V3, V4), (V4, V5), (V5, VX), (V4, V6), (V6, V6a), (V6a, V7), (V6a, V6), (V7, VX), (V6a, V6b), (V6b, V6), (V6b, V7), (V7, VX), (V6, V8), (V8, VX) <br>
-<strong>Quantidade de Caminhos Básicos:</strong> 7</p>
-<h3 id="identifica-o-dos-caminhos-b-sicos">Identificação dos Caminhos Básicos</h3>
+  <body class='markdown-preview' data-use-github-style><h1 id="sin5022_testes_software">SIN5022_testes_software</h1>
+<h3 id="atividade-2-contador-de-palavras">Atividade 2: Contador de Palavras</h3>
+<h4 id="atividade-4-parte-a">Atividade 4 Parte A</h4>
+<p>Considere o método int countWords(String str)</p>
+<ul>
+<li>Este método recebe uma string como parâmetro e retorna a
+quantidade de palavras que terminam com a letra “r” ou “s”. Uma
+palavra precisa ter no mínimo dois caracteres.</li>
+<li>Exemplos: (“Ar puro”,1), (“Fazer valer a pena”, 2), (“As letras r e s
+são usadas sempre”, 3)</li>
+</ul>
+<h3 id="an-lise-de-classes-de-equival-ncia">Análise de Classes de Equivalência</h3>
 <table>
 <thead>
 <tr>
-<th>ID</th>
-<th>Caminhos Básicos</th>
+<th>Entrada</th>
+<th>Classes Válidas</th>
+<th>Classes Inválidas</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>1</td>
-<td>V1, V2, VX</td>
+<td>palavra</td>
+<td>Strings tamanho &gt; 2 [C1]</td>
+<td>tamanho = 0   [C2]</td>
 </tr>
 <tr>
-<td>2</td>
-<td>V1, V2, V2a, V3, VX</td>
+<td>palavra</td>
+<td>Strings tamanho &gt; 2 [C1]</td>
+<td>null          [C3]</td>
 </tr>
 <tr>
-<td>3</td>
-<td>V1, V2, V2a, V2b, V3, VX</td>
+<td>palavra</td>
+<td>Strings tamanho &gt; 2 [C1]</td>
+<td>tamanho = 1   [C4]</td>
 </tr>
 <tr>
-<td>4</td>
-<td>V1, V2, V2a, V2b, V4, V5, VX</td>
+<td>frase</td>
+<td>Frase valida        [C5]</td>
+<td>frase com  tamanho &lt; 2  [C6]</td>
 </tr>
 <tr>
-<td>5</td>
-<td>V1, V2, V2a, V2b, V4, V6, V6a, V7, VX</td>
-</tr>
-<tr>
-<td>6</td>
-<td>V1, V2, V2a, V2b, V4, V6, V6a, V6b, V7, VX</td>
-</tr>
-<tr>
-<td>7</td>
-<td>V1, V2, V2a, V2b, V4, V6, V6a, V6b, V8, VX</td>
+<td>palavra</td>
+<td>ultima letra com r ou s</td>
+<td>não existe</td>
 </tr>
 </tbody>
 </table>
-<h3 id="casos-de-teste">Casos de teste</h3>
+<h3 id="an-lise-de-valor-limite">Análise de Valor Limite</h3>
+<table>
+<thead>
+<tr>
+<th>Entrada</th>
+<th>Classes Válidas</th>
+<th>Classes Inválidas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>tamanho String &gt;= 2  (V1)</td>
+<td>Tamanho = 0 (V2), tamanho = 1  V3</td>
+</tr>
+<tr>
+<td>String</td>
+<td>tamanho String &gt;= 2  (V1)</td>
+<td>Nulo                           V4</td>
+</tr>
+<tr>
+<td>String</td>
+<td>tamanho String &gt;= 2  (V1)</td>
+<td>"  "                           V5</td>
+</tr>
+</tbody>
+</table>
+<h3 id="casos-de-teste-valor-limite-e-classes-de-equival-ncia">Casos de teste: Valor limite e classes de equivalência</h3>
 <table>
 <thead>
 <tr>
 <th>ID</th>
 <th>Entrada</th>
-<th>Caminhos Básicos</th>
+<th>Oráculo</th>
+<th>Classe</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>1</td>
-<td>null</td>
-<td>V1, V2, VX</td>
+<td>nulo</td>
+<td>-1</td>
+<td>V4</td>
 </tr>
 <tr>
 <td>2</td>
 <td>""</td>
-<td>V1, V2, V2a, V3, VX</td>
+<td>0</td>
+<td>V2</td>
 </tr>
 <tr>
 <td>3</td>
-<td>abcdefgh</td>
-<td>V1, V2, V2a, V2b, V3, VX</td>
+<td>"ad"</td>
+<td>0</td>
+<td>V1</td>
 </tr>
 <tr>
 <td>4</td>
-<td>6abcd</td>
-<td>V1, V2, V2a, V2b, V4, V5, VX</td>
+<td>"a"</td>
+<td>0</td>
+<td>V3</td>
 </tr>
 <tr>
 <td>5</td>
-<td>a$bcde</td>
-<td>V1, V2, V2a, V2b, V4, V6, V6a, V7, VX</td>
+<td>"as"</td>
+<td>1</td>
+<td>C1</td>
 </tr>
 <tr>
 <td>6</td>
-<td>a4bcde</td>
-<td>V1, V2, V2a, V2b, V4, V6, V6a, V6b, V7, VX</td>
+<td>""</td>
+<td>0</td>
+<td>C2</td>
 </tr>
 <tr>
 <td>7</td>
-<td>abcde</td>
-<td>V1, V2, V2a, V2b, V4, V6, V6a, V6b, V8, VX</td>
+<td>null</td>
+<td>0</td>
+<td>C3</td>
+</tr>
+<tr>
+<td>8</td>
+<td>"s"</td>
+<td>0</td>
+<td>C4</td>
+</tr>
+<tr>
+<td>9</td>
+<td>"Testes Fortes error"</td>
+<td>3</td>
+<td>C5</td>
+</tr>
+<tr>
+<td>10</td>
+<td>"r s"</td>
+<td>0</td>
+<td>C4</td>
+</tr>
+<tr>
+<td>11</td>
+<td>"  "</td>
+<td>0</td>
+<td>V5</td>
 </tr>
 </tbody>
 </table>
+<h2 id="exercicio-2-parte-b-e-c-ver-considera-es-no-final-do-documento-">Exercicio 2 - Parte B e C ( Ver considerações no final do documento)</h2>
+<h2 id="grafo">Grafo</h2>
+<p><img src="https://g.gravizo.com/svg?&#10; digraph G {&#10;   V1 -&gt; V2;&#10;   V1 -&gt; V3;&#10;   V2 -&gt; VX;&#10;   V3 -&gt; V4;&#10;   V3 -&gt; V12;&#10;   V4 -&gt; V5;&#10;   V5 -&gt; V7;&#10;   V7 -&gt; V8;&#10;   V8 -&gt; V9;&#10;   V9 -&gt; V3;&#10;   V9 -&gt; V16&#10;   V16 -&gt; VX;&#10;   V5 -&gt; V6;&#10;   V6 -&gt; V7;&#10;   V6 -&gt; V9;&#10;   V4 -&gt; V10;&#10;   V10 -&gt; V11;&#10;   V11 -&gt; V12;&#10;   V11 -&gt; V3;&#10;   V12 -&gt; V14;&#10;   V14 -&gt; V15;&#10;   V15 -&gt; V16;&#10;   V16 -&gt; VX;&#10;   V12 -&gt; V13;&#10;   V13 -&gt; V14;&#10; }"></p>
+<h4 id="onde-vx-a-sa-da-do-programa-">Onde VX é a saída do programa.</h4>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Entrada</th>
+<th>Caminho Grafo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>nulo</td>
+<td>V1 -&gt; V2 -&gt; VX</td>
+</tr>
+<tr>
+<td>2</td>
+<td>""</td>
+<td>V1 -&gt; V3 -&gt; V12 -&gt; V13 -&gt; V16 -&gt; VX</td>
+</tr>
+<tr>
+<td>3</td>
+<td>"ad"</td>
+<td>V1 -&gt; V3 -&gt; V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt; V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt; V12 -&gt; V13 -&gt; V16 -&gt; VX</td>
+</tr>
+<tr>
+<td>4</td>
+<td>"a"</td>
+<td>V1 -&gt; V3 -&gt; V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt; V12 -&gt; V13 -&gt; V16 -&gt; VX</td>
+</tr>
+<tr>
+<td>5</td>
+<td>"as"</td>
+<td>V1 -&gt; V3 -&gt; V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt; V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt; V12 -&gt; V13 -&gt; V14 -&gt; V15 -&gt; V16, VX</td>
+</tr>
+<tr>
+<td>6</td>
+<td>""</td>
+<td>V1 -&gt; V3 -&gt; V12 -&gt; V13 -&gt; V16 -&gt; VX</td>
+</tr>
+<tr>
+<td>7</td>
+<td>null</td>
+<td>V1 -&gt; V2 -&gt; VX</td>
+</tr>
+<tr>
+<td>8</td>
+<td>"s"</td>
+<td>V1 -&gt; V3 -&gt; V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt; V12 -&gt; V13 -&gt; V14 -&gt; V16 -&gt; VX</td>
+</tr>
+<tr>
+<td>9</td>
+<td>"Testes Fortes error"</td>
+<td>V1 -&gt;V3 -&gt; V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt; V3 -&gt; V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt;  V3 -&gt;V4 -&gt; V5 -&gt; V7 -&gt; V8 -&gt; V9 -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt; V4 -&gt; V5 -&gt; V7 -&gt; V8 -&gt; V9 -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt;V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt; V12 -&gt; V14 -&gt; V15 -&gt; V16 -&gt; VX</td>
+</tr>
+<tr>
+<td>10</td>
+<td>"r s"</td>
+<td>V1 -&gt; V3 -&gt; V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt; V4 -&gt; V5 -&gt; V6 -&gt; V7 -&gt; V9 -&gt; V3 -&gt; V4 -&gt; V10 -&gt; V11 -&gt; V3 -&gt; V12 -&gt; V13 -&gt; V14 -&gt; V16 -&gt; VX</td>
+</tr>
+<tr>
+<td>11</td>
+<td>"  "</td>
+<td>V1 -&gt; V3 -&gt; V4 -&gt; V5 -&gt; V6 -&gt; V9 -&gt; V3 -&gt; V4 V5 -&gt; V6 -&gt; V9 -&gt; V3 -&gt; V12 -&gt; V13 -&gt; V16 -&gt; VX</td>
+</tr>
+</tbody>
+</table>
+<h3 id="considera-es-">Considerações:</h3>
 <ul>
-<li><strong><em> Observação 1: </em></strong>  O ID 6 representa um caminho pelo qual o sistema nunca irá passar. mais especificamente nna instrução conflitante V6b</li>
+<li><p>Os testes deram 100% line coverage e branch coverage.</p>
+</li>
+<li><p>Isso ocorreu na primeira tentativa. Mas há de se considerar que existem testes nos casos de teste que talvez não respeitem a técnica de classes de equivalência ou valor limite. (É uma dúvida, inclusive).</p>
+</li>
+<li><p>Nesses testes em questão, eu imaginei que alguém poderia ter escrito de alguma amneira diferente o cídigo e quis testar o ID 10 e 11, por exemplo.</p>
+</li>
 </ul>
 <ul>
-<li><strong><em> Observação 2: </em></strong>  Verifiquei depois de terminar a atividade que o codigo sillyPascal desta atividade é ligeiramente diferente da atividade anterior. Como eu utilizei por conveniência o código da atividade anterior deve dar alguma diferença nos caminhos, pois não verifiquei o mesmo erro na outra implementação.</li>
+<li><p>A única diferença encontrada foi no ID 1, onde na especificação não consta a informação de retorno do numero -1 em caso de nulo. O teste falhou e foi adaptado para esperar -1 ao inves de zero. Essa atividade foi feita durante a etapa A da atividade. Por isso o branch e line coverage atingiram 100% ainda nos testes funcionais.</p>
+</li>
+<li><p>Neste caso então a parte B e C são praticamente a mesma coisa com exceção do ID 1, que poderia ser pego na Etapa B e C, mas foi por coincidência pego na parte A.</p>
+</li>
 </ul></body>
 </html>
