@@ -1,6 +1,7 @@
 package coffeemaker;
 
 import coffeemaker.exceptions.InvalidValueException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,7 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RecipeTest {
 
-    //private static final Recipe VALID_RECIPE = new Recipe("Coffee",50,4,0,1,0);
+     private  Recipe r3;
+
+    @BeforeEach
+    public  void setUp() throws Exception {
+        r3 = new Recipe("Latte",75,3,1,1,0);
+    }
 
         @Test
         public void RecipeTest01() throws InvalidValueException {
@@ -107,6 +113,26 @@ public class RecipeTest {
     @Test
     public void testCreateInvalidPrice() throws InvalidValueException{
         assertThrows(InvalidValueException.class, () ->new Recipe("aName",0,4,1,1,1));
+    }
+
+    @Test
+    public void testAddInventoryWithWrongQuantityOfChocolate() throws InvalidValueException {
+        assertThrows(InvalidValueException.class, () -> r3.setAmtChocolate(-1));
+    }
+
+    @Test
+    public void testAddInventoryWithWrongQuantityOfCoffee() throws InvalidValueException {
+        assertThrows(InvalidValueException.class, () -> r3.setAmtCoffee(-1));
+    }
+
+    @Test
+    public void testAddInventoryWithWrongQuantityOfSugar() throws InvalidValueException {
+        assertThrows(InvalidValueException.class, () -> r3.setAmtSugar(-1));
+    }
+
+    @Test
+    public void testAddInventoryWithWrongQuantityOfMilk() throws InvalidValueException {
+        assertThrows(InvalidValueException.class, () -> r3.setAmtMilk(-1));
     }
 
 }

@@ -18,6 +18,7 @@ public class CoffeeMakerTest {
     private  Recipe r2;
     private  Recipe r3;
     private  Recipe r4;
+    private  Recipe rZerado;
 
     @BeforeEach
     public  void setUp() throws Exception {
@@ -338,4 +339,57 @@ public class CoffeeMakerTest {
     /*ESCREVA A PARTIR DAQUI OS CASOS DE TESTE ADICIONAIS
     PARA ATINGIR 100% DE BRANCH COVERAGE DE TODAS AS CLASSES DO PROGRAMA*/
 
+    @Test //Não é possivel atender a qualquer um dos branches pois são mutuamente excludentes
+    public void negativeAmountPaidShouldThrowException() throws InvalidValueException, DuplicatedRecipeException, AmountOfRecipeException {
+        boolean ok = CM.addRecipe(r1);
+        assertTrue(ok);
+        assertThrows(InventoryException.class, () -> CM.makeCoffee(r1.getName(), -1));
+    }
+
+    @Test //Não é possivel testar as duas condiçõe spor serem mutuamente excludentes.
+    public void largePositiveAmountPaidShouldThrowException() throws InvalidValueException, DuplicatedRecipeException, AmountOfRecipeException {
+        boolean ok = CM.addRecipe(r1);assertTrue(ok);
+        assertThrows(InventoryException.class, () -> CM.makeCoffee(r1.getName(), 1000));
+    }
+
+    @Test
+    public void inexistentRecipeShouldThrowException() throws InvalidValueException, DuplicatedRecipeException, AmountOfRecipeException {
+        boolean ok = CM.addRecipe(r1);
+        assertTrue(ok);
+        assertThrows(RecipeException.class, () -> CM.makeCoffee("inexistente", 10));
+    }
+
+    @Test
+    public void testAddMoreThen100ChocolateUnitsShouldThrowException() {
+        assertThrows(InvalidValueException.class, () -> CM.addChocolateInventory(101));
+    }
+
+    @Test
+    public void testRecipeWithZeroIngredientsShouldRaiseException(){
+        assertThrows(InvalidValueException.class, () -> CM.addRecipe(new Recipe("Zerado",1,0,0,0,0)));
+    }
+
+    @Test
+    public void testANullRecipeNameShouldRaiseException(){
+        assertThrows(InvalidValueException.class, () -> CM.addRecipe(new Recipe(null,1,1,1,1,1)));
+    }
+
+    @Test
+    public void testAEmptyRecipeNameShouldRaiseException(){
+        assertThrows(InvalidValueException.class, () -> CM.addRecipe(new Recipe("",1,1,1,1,1)));
+    }
+
+    @Test
+    public void testANegativePriceShouldRaiseException(){
+        assertThrows(InvalidValueException.class, () -> CM.addRecipe(new Recipe("rcpt",-1,1,1,1,1)));
+    }
+
+    @Test
+    public void testRecipeFullyDupicatedShouldRaiseException() throws DuplicatedRecipeException, AmountOfRecipeException, InvalidValueException {
+        Recipe r1 = new Recipe("Coffee",50,1,1,1,1);
+        Recipe r2 = new Recipe("Coffee2",50,1,1,1,1);
+
+        CM.addRecipe(r1);
+        assertThrows(DuplicatedRecipeException.class, () -> CM.addRecipe(r2));
+    }
 }

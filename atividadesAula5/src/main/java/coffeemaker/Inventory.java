@@ -46,7 +46,7 @@ public class Inventory {
     		this.chocolate = chocolate;
     	}
     	else
-    		throw new InvalidValueException("Invalid amount of chocolate");
+    		throw new InvalidValueException("Invalid amount of chocolate"); //Não é possível testar a partir de CoffeeMaker,java e Recipe.java
         
     }
     
@@ -83,7 +83,7 @@ public class Inventory {
     		this.coffee = coffee;
     	}
     	else
-    		throw new InvalidValueException("Invalid amount of coffee");
+    		throw new InvalidValueException("Invalid amount of coffee"); // Não é possivel testar a partir de CoffeeMaker.java e Recipe.java
     }
     
     /**
@@ -116,7 +116,7 @@ public class Inventory {
     	if(milk >= 0 && milk<=100) {
     		this.milk = milk;
     	} else {
-			throw new InvalidValueException("Invalid amount of milk");
+			throw new InvalidValueException("Invalid amount of milk"); //nao e possivel testar a partir de CoffeeMaker.java e Recipe.java
 		}
     }
     
@@ -150,7 +150,7 @@ public class Inventory {
     	if(sugar >= 0 && sugar<=100) {
     		this.sugar = sugar;
     	}else {
-			throw new InvalidValueException("Invalid amount of sugar");
+			throw new InvalidValueException("Invalid amount of sugar"); //não é possivel testar a partir de coffeeMaker.class e Recipe.class
 		}
     }
     

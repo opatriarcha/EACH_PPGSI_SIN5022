@@ -20,9 +20,9 @@ public class CoffeeMaker {
 	    recipeBook = new RecipeBook();
 		try {
 			inventory = new Inventory();
-		} catch (InvalidValueException e) {
+		} catch (InvalidValueException e) { //nunca sera executado
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); //nunca sera executado.
 		}
 	}
 	
@@ -110,8 +110,8 @@ public class CoffeeMaker {
 
      */
     public synchronized int makeCoffee(String recipeName, int amtPaid) throws InvalidValueException,InsufficientAmountOfMoneyException, RecipeException, InventoryException {
-		if (amtPaid < 0 && amtPaid > 500) {
-			throw new InvalidValueException("Payment must be positive or less than 500 cents");
+		if (amtPaid < 0 && amtPaid > 500) { //mutuamente excludente
+			throw new InvalidValueException("Payment must be positive or less than 500 cents"); //nunca sera executado
 		} else {
 			int change = 0;
 			Recipe recipe = recipeBook.getRecipe(recipeName);

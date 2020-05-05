@@ -31,10 +31,17 @@ public class RecipeBook {
 	
 	private boolean recipeExists(Recipe r){
 		for (Recipe recipe: recipeArray){
-			if ((recipe.getAmtChocolate()==r.getAmtChocolate() && 
-					recipe.getAmtCoffee()==r.getAmtCoffee() &&
-					recipe.getAmtMilk()==r.getAmtMilk() &&
-					recipe.getAmtSugar()==r.getAmtSugar()) || recipe.getName().equals(r.getName()))
+			if (
+					(
+						recipe.getAmtChocolate()==r.getAmtChocolate() &&
+						recipe.getAmtCoffee()==r.getAmtCoffee() &&
+						recipe.getAmtMilk()==r.getAmtMilk() &&
+						recipe.getAmtSugar()==r.getAmtSugar()
+					) ||
+
+					recipe.getName().equals(r.getName())
+			)
+
 				return true;
 		}
 		return false;
