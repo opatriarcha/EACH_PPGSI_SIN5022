@@ -3,10 +3,12 @@ package coffeemaker;
 import coffeemaker.exceptions.InvalidValueException;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RecipeTest {
 
+    //private static final Recipe VALID_RECIPE = new Recipe("Coffee",50,4,0,1,0);
 
         @Test
         public void RecipeTest01() throws InvalidValueException {
@@ -55,5 +57,56 @@ public class RecipeTest {
 
     /*ESCREVA A PARTIR DAQUI OS CASOS DE TESTE ADICIONAIS
     PARA ATINGIR 100% DE BRANCH COVERAGE DE TODAS AS CLASSES DO PROGRAMA*/
+
+    @Test
+    public void testRetrieveChocolateMethod() throws InvalidValueException{
+        Recipe recipe = new Recipe("rcp",1,1,1,1, 50);
+        assertEquals(50, recipe.getAmtChocolate());
+    }
+
+    @Test
+    public void testRetrieveMilkMethod() throws InvalidValueException{
+        Recipe recipe = new Recipe("rcp",1,1,1,1, 50);
+        assertEquals(1, recipe.getAmtMilk());
+    }
+
+    @Test
+    public void testRetrieveCoffeeMethod() throws InvalidValueException{
+        Recipe recipe = new Recipe("rcp",1,1,1,1, 50);
+        assertEquals(1, recipe.getAmtCoffee());
+    }
+
+    @Test
+    public void testRetrieveSugarMethod() throws InvalidValueException{
+        Recipe recipe = new Recipe("rcp",1,1,1,1, 50);
+        assertEquals(1, recipe.getAmtSugar());
+    }
+
+    @Test
+    public void testRetrievePriceMethod() throws InvalidValueException{
+        Recipe recipe = new Recipe("rcp",1,1,1,1, 50);
+        assertEquals(1, recipe.getPrice());
+    }
+
+    @Test
+    public void testRetrieveNameMethod() throws InvalidValueException{
+        Recipe recipe = new Recipe("rcp",1,1,1,1, 50);
+        assertEquals("rcp", recipe.getName());
+    }
+
+    @Test
+    public void testCreateInvalidCoffeeAmount() throws InvalidValueException{
+        assertThrows(InvalidValueException.class, () ->new Recipe("aName",50,-4,1,1,1));
+    }
+
+    @Test
+    public void testCreateInvalidSugarAmount() throws InvalidValueException{
+        assertThrows(InvalidValueException.class, () ->new Recipe("aName",50,4,1,-1,1));
+    }
+
+    @Test
+    public void testCreateInvalidPrice() throws InvalidValueException{
+        assertThrows(InvalidValueException.class, () ->new Recipe("aName",0,4,1,1,1));
+    }
 
 }
