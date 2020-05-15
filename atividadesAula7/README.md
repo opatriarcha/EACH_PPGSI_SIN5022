@@ -39,3 +39,52 @@ Estou considerando aqui que estamos falando de gerar os casos de teste via JUnit
 
 **Avaliação da solução**
   Em tempo de experimentação, verificaria se os casos de testes atingem alto percentual de branch e line coverage. Poderia aplicar os testes de mutação para ver se algum mutante represente um caso não coberto pela heuristica, utilizando o score de mutação.
+
+
+
+#### Atividade Aula 6 parte 2- Resumo do Artigo.
+
+O artigo é uma pesquisa razoavelmente informal. Foi perguntado para 50 pesquisadores da área de teste de software quais as maiores contribuições e quais os maiores desafios ou oportunidades em aberto em tal área no período de 2000 a 2014.
+
+As 9 maiores contribuições de pesquisa são distribuídas em quatro categorias:
+
+* Geração automatizada de Entradas de Teste:
+  - Symbolic Execution;
+  - Search-based Testing;
+  - Random Testing;
+  - Tecnicas combinadas;
+
+
+* Estratégias de Teste:
+  - Combinatorial Testing;
+  - Model Based Testing;
+  - Minning and Learning from Field Testing;
+
+* Testes de Regressão;
+* Estudos Empíricos
+
+
+As contribuições práticas citadas pelo artigo são:
+* Frameworks para execução automatizada de Testes ( XUnit );
+* Prática de Integração Continua;
+
+Os desafios e oportunidades em aberto mais indicados no artigo são:
+* Teste de Software em softwares modernos do mundo real.
+* Toda a temática que envolve os oráculos.
+* Analise probabilística de programas;
+* Teste de propriedades não funcionais de programas;
+* Teste baseado em Domínio.
+* Teste de aplicações em abiente de cloud computing e teste "Crowd".
+  - Este último se caracteriza por distribuir a atividade humana de teste em um coletivo de testadores, provavelmente através de algum tipo de gamificação.
+
+Embora este não seja um artigo plenamente técnico, é bastante interessante por trazer à tona os temas/areas de pesquisa mais relevantes, assim como papers relevantes de cada sub área de pesquisa.
+
+Acredito ser interessante toda a automatização das atividades de teste em seus mais diversos níveis, em parte pelos conhecidos argumentos técnicos, mas ao mesmo tempo pelos argumentos relativos ao negócio. É difícil vender teste. É difícil dedicar uma extensa porção de cronograma à atividades de teste quando se vende/negocia projetos de software. É complicado comunicar aos stakeholders a necessidades das etapas de teste. E acredito que o máximo possivel de automação diminui a necessidade do discurso argumentativo nesse sentido.
+
+É interessante também o teste baseado em domínios especificos, pois cada vez mais tais domínios se expandem, (WEB, componentização, ws*, restful ws, nocode e lowcode, etc ). Nos dois ultimos, pode ser interessante a relação com Shadow IT. Se as auditorias pontuam negativamente as empresas pela proliferação de shadow IT, por outro lado há custos envolvidos em o departamento de TI absorver todas as iniciativas shadow da empresa, inclusive no controle de qualidade. Iniciativas de controle de qualidade e testes nesses abientes devem ser de grande valia.
+
+As iniciativas de Crowd sourcing principalmente as relativas à algum tipo de gamificação também acho interessante, no sentido de encontrar uma possível solução criativa, distribuída e baseada em ação coletiva para o processo, mesmo sendo por natureza, um processo humano.
+
+Aparentemente as pesquisas em teste de software são realizadas em grande parte com experimentos controlados principalmente em laboratório. E recentemente tem se tornado mais importante em termos de impacto acadêmico a utilização de testes em ambientes não controlados, mais próximo do real ou até sistemas reais. Faz total sentido, mas é necessário observar nos artigos o quão longe da realidade estão essas pesquisas em termos de software sendo testado.
+
+Ao final da leitura, o artigo proporciona certo esclarecimento acerca do rumo das pesquisas em teste de software e os problemas em aberto até 2014, pelo menos.
