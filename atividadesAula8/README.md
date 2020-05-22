@@ -2,6 +2,8 @@
 
 O aplicativo é destinado à busca de mangas ( historias em quadrinhos predominantemente japonesas) em concentradores "não oficiais" de conteúdo na internet. Tal conteudo está organizado por publicação, capítulos e páginas, sendo a ultima uma coleção de imagens. O aplicativo busca essas meta informações e faz o download das imagens organizado por publicação/capítulo e permite a leitura dos mesmos via um leitor de imagens.
 
+O ESG abaixo está consideranto a aplicação de busca de conteúdo, mas não contempla o leitor de imagens por questões de tamanho e escopo.
+
 ### ESG do aplicativo:
 
 ## Grafo
@@ -46,5 +48,24 @@ O aplicativo é destinado à busca de mangas ( historias em quadrinhos predomina
   "Press Back Button2" -> "Library Screen";
   "Library Screen" -> "Press Back Button3";
   "Press Back Button3" -> "Exits Application";
+  "Library Screen" -> "Press Title" -> "Show Manga Detail Screen";
+  "Show Manga Detail Screen" -> "Press Read Online" -> "Show Reader Widget";
+  "Show Manga Detail Screen" -> "Press Continue Offline" -> "Show Reader Widget";
+  "Show Manga Detail Screen" -> "Press Web Comig Check" -> "Show Manga Details Screen";
+  "Show Manga Detail Screen" -> "Press Chapter Menu" -> "Show Chapters Screen";
+  "Show Manga Detail Screen" -> "Press Favourite Button" -> "Show Manga Details Screen";
+  "Show Manga Detail Screen" -> "Press Share Button" -> "Choose Target" -> "Show Manga Details Screen";
+  "Show Chapters Screen" -> "Press Order A-Z Button";
+  "Press Play Button" -> "Show Reader Widget";
  }
 '/>
+
+<!-- "Press Order A-Z Button" -> "Show Chapters Screen";
+"Show Chapters Screen" -> "Press Play Button";
+"Press Download Button" -> "Show Chapters Screen";
+"Show Chapters Screen" -> "Press Readed Button";
+"Press Readed Button" -> "Show Chapters Screen";
+"Show Chapters Screen" -> "Press Download Button";
+"Show Chapters Screen" -> "Press Download All";
+"Press Download All" -> "Show Chapters Screen";
+"Show Chapters Screen" -> "Press Select All" -> "Show Chapters Screen"; -->
