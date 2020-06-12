@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.each.ppgsi.testeDeSoftware.shuntingYardParser;
 
-import static br.com.each.ppgsi.testeDeSoftware.shuntingYardParser.ShuntingYardSimpleParser.RPNtoDouble;
-import static br.com.each.ppgsi.testeDeSoftware.shuntingYardParser.ShuntingYardSimpleParser.infixToRPN;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -24,8 +18,9 @@ public class ShuntingYardSimpleParserTest {
      */
     @Test
     public void testInfixToRPN() {
+        ShuntingYardSimpleParser instance = ShuntingYardSimpleParser.getInstance();
         String[] input = "( 1 + 2 ) * ( 3 / 4 ) - ( 5 + 6 )".split(" ");       
-        String[] output = infixToRPN(input);
+        List<String> output = instance.infixToReversePolishNotation(Arrays.asList(input));
          
         System.out.println("expression:  ( 1 + 2 ) * ( 3 / 4 ) - ( 5 + 6 )");
         // Build output RPN string minus the commas
@@ -34,9 +29,9 @@ public class ShuntingYardSimpleParserTest {
             System.out.print(token + " ");
         }
          
-        // Feed the RPN string to RPNtoDouble to give result
-        Double result = RPNtoDouble( output );
-        System.out.println("RESULT: " + result);
+//        // Feed the RPN string to RPNtoDouble to give result
+//        Double result = RPNtoDouble( output );
+//        System.out.println("RESULT: " + result);
     }
 
     /**

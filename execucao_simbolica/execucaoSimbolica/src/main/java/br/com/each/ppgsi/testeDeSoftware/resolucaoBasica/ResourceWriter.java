@@ -1,25 +1,41 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.each.ppgsi.testeDeSoftware.resolucaoBasica;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author orlando
  */
-public class ResourceWriter {
 
-    public void writeFile(final String filepath, final String content) {
+public class ResourceWriter {
+    
+    private String fileName;
+    
+    public ResourceWriter(String fileName){
+        this.fileName = fileName;
+    }
+    
+    public void openFile(){
+        File file = new File(this.fileName);
+        if( file.exists() )
+            try {
+                file.createNewFile();
+        } catch (IOException ex) {
+            Logger.getLogger(ResourceWriter.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException("Cannot Create a new File in destination: " + this.fileName);
+        }
+    }
+    
+
+    public void writeFile(final String content) {
         BufferedWriter bufferedWriter = null;
         try {
-            File file = new File(filepath);
+            File file = new File(this.fileName);
 
             if (!file.exists()) {
                 file.createNewFile();
@@ -35,7 +51,7 @@ public class ResourceWriter {
                 if (bufferedWriter != null) {
                     bufferedWriter.close();
                 }
-            } catch (Exception ex) {
+            } catch (IOException ex) {
                 System.out.println("Error in closing the BufferedWriter" + ex);
             }
         }

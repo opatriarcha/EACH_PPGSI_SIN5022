@@ -1,16 +1,19 @@
 package br.com.each.ppgsi.testeDeSoftware.shuntingYardParser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
 /**
- * Thanksto Dijksra ( he is watching! )
+ * Thanks to Dijkstra ( he is watching! )
  * @author orlando
  */
 public class ShuntingYardSimpleParser {
 
+    // trocar por enum pq isso é muito feio!!!
     private static final int LEFT_ASSOC  = 0;
     private static final int RIGHT_ASSOC = 1;
   
@@ -27,13 +30,20 @@ public class ShuntingYardSimpleParser {
         OPERATORS.put("=", new int[] { 9, LEFT_ASSOC });
         OPERATORS.put("^", new int[] { 9, LEFT_ASSOC });
     }
+    
+    private ShuntingYardSimpleParser(){
+    }
   
+    public static ShuntingYardSimpleParser getInstance(){
+        return new ShuntingYardSimpleParser();
+    }
+    
     private static boolean isOperator(String token){
         return OPERATORS.containsKey(token);
     }
   
     // Testa a associativiade
-    private static boolean isAssociative(String token, int type) 
+    private static boolean isAssociativeComponent(String token, int type) 
     {
         if (!isOperator(token))
             throw new IllegalArgumentException("Invalid token: " + token);
@@ -44,7 +54,7 @@ public class ShuntingYardSimpleParser {
     }
   
     // Compare precedence of operators.    
-    private static final int cmpPrecedence(String token1, String token2){
+    private static final int assertPrecedence(String token1, String token2){
         if (!isOperator(token1) || !isOperator(token2)){
             throw new IllegalArgumentException("Invalid tokens: " + token1  + " " + token2);
         }
@@ -52,10 +62,10 @@ public class ShuntingYardSimpleParser {
     }
   
     // Converte INFIX para RESVERSE POLISH
-    public static String[] infixToRPN(String[] inputTokens) 
+    public List<String> infixToReversePolishNotation(List<String> inputTokens) 
     {
-        ArrayList<String> out = new ArrayList<String>();
-        Stack<String> stack = new Stack<String>();
+        List<String> out = new ArrayList<>();
+        Stack<String> stack = new Stack<>();
          
         
         for (String token : inputTokens){
@@ -63,10 +73,10 @@ public class ShuntingYardSimpleParser {
             if (isOperator(token)){  
                 //pilha não vazia e é um operator
                 while (!stack.empty() && isOperator(stack.peek())){                    
-                    if ((isAssociative(token, LEFT_ASSOC)         && 
-                         cmpPrecedence(token, stack.peek()) <= 0) || 
-                        (isAssociative(token, RIGHT_ASSOC)        && 
-                         cmpPrecedence(token, stack.peek()) < 0)){
+                    if ((isAssociativeComponent(token, LEFT_ASSOC)         && 
+                         assertPrecedence(token, stack.peek()) <= 0) || 
+                        (isAssociativeComponent(token, RIGHT_ASSOC)        && 
+                         assertPrecedence(token, stack.peek()) < 0)){
                         out.add(stack.pop());   
                         continue;
                     }
@@ -94,12 +104,11 @@ public class ShuntingYardSimpleParser {
         while (!stack.empty()){
             out.add(stack.pop()); 
         }
-        String[] output = new String[out.size()];
-        return out.toArray(output);
+       
+        return out;
     }
      
-    public static double RPNtoDouble(String[] tokens)
-    {        
+    public static double RPNtoDouble(List<String> tokens){        
         Stack<String> stack = new Stack<String>();
          
         // For each token 
@@ -129,11 +138,21 @@ public class ShuntingYardSimpleParser {
          
         return Double.valueOf(stack.pop());
     }
+    
+    public String toPrettyFormat(List<String> valueList){
+        StringBuilder builder = new StringBuilder();
+        for( String value: valueList){
+            builder.append(value).append(" ");
+        }
+        String result = builder.toString();
+        return result.trim();
+    }
   
     public static void main(String[] args) {
-        //String[] input = "( 1 + 2 ) * ( 3 / 4 ) - ( 5 + 6 )".split(" ");
-        String[] input = "( ( X > 0 ) ^ ( Y <= 5 ) ) ^ ( X < Y + 5 )".split(" ");
-        String[] output = infixToRPN(input);
+        ShuntingYardSimpleParser parser = ShuntingYardSimpleParser.getInstance();
+        String[] input = "( 1 + 2 ) * ( 3 / 4 ) - ( 5 + 6 )".split(" ");
+        //String[] input = "( ( X > 0 ) ^ ( Y <= 5 ) ) ^ ( X < Y + 5 )".split(" ");
+        List<String> output = parser.infixToReversePolishNotation(Arrays.asList(input));
          
         // constroi a string tirando os parentesis
          for (String token : output) {

@@ -1,20 +1,24 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.each.ppgsi.testeDeSoftware.resolucaoBasica;
 
+import br.com.each.ppgsi.testeDeSoftware.shuntingYardParser.ShuntingYardSimpleParser;
+import br.usp.astExpressionParser.Commons;
+import br.usp.astExpressionParser.interpreter.ExpressionParser;
+import br.usp.astExpressionParser.lexer.Lexer;
 import choco.Choco;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
+import choco.kernel.common.util.iterators.DisposableIterator;
 import choco.kernel.model.Model;
+import choco.kernel.model.constraints.Constraint;
 import choco.kernel.model.variables.ComponentVariable;
 import choco.kernel.model.variables.integer.IntegerConstantVariable;
 import choco.kernel.model.variables.integer.IntegerVariable;
 import choco.kernel.model.variables.real.RealConstantVariable;
 import choco.kernel.model.variables.real.RealVariable;
 import choco.kernel.solver.Solver;
+import choco.kernel.solver.constraints.SConstraint;
+import choco.kernel.solver.variables.integer.IntDomainVar;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,19 +29,24 @@ import java.util.Map;
  * @author orlando
  */
 public class TestInputGenerator {
+    
+    private final ResourceWriter resolutionWriter = new ResourceWriter(Commons.RESOLUTION_DESTINATION_PATH);
+    private final ResourceWriter completeResolutionWriter = new ResourceWriter(Commons.COMPLETE_RESOLUTION_DESTINATION_PATH);
+    private final ResourceWriter constraintWriter = new ResourceWriter(Commons.CONSTRAINTS_DESTINATION_PATH);
+
      
-    public TestInputGenerator(){
-        
-        mapping.put("=", "eq");
-        mapping.put("<", "lt");
-        mapping.put("<=", "leq");
-        mapping.put(">", "gt");
-        mapping.put("=>", "geq");
-        mapping.put("+", "plus");
-        mapping.put("-", "minus");
-        mapping.put("/", "div");
-        mapping.put("*", "mult");
-    }
+//    public TestInputGenerator(){
+//        
+//        mapping.put("=", "eq");
+//        mapping.put("<", "lt");
+//        mapping.put("<=", "leq");
+//        mapping.put(">", "gt");
+//        mapping.put("=>", "geq");
+//        mapping.put("+", "plus");
+//        mapping.put("-", "minus");
+//        mapping.put("/", "div");
+//        mapping.put("*", "mult");
+//    }
     
     private static final Map<String, String> mapping = new HashMap<>();
 
@@ -57,7 +66,7 @@ public class TestInputGenerator {
                 ComponentVariable variable = null;
                 Double doubleVariable = null;
                 Integer integerVariavle = null;
-                ExpressionVariable = null;
+                //ExpressionVariable = null; parei aqui
                 for (String instruction : instructions) {
                     System.out.println(instruction);
                     if(isVariable(variables, instruction)){
@@ -76,6 +85,93 @@ public class TestInputGenerator {
             
         }
 
+    }
+    
+    public void executeWithResolver(final String filename) {
+        ResourceReader reader = ResourceReader.getInstance();
+        
+        
+        List<String> lines = reader.read(filename);
+
+        List<String> predicates = new ArrayList<>();
+        InstructionParser parser = InstructionParser.getinstance();
+        List<String> variables = parser.parseVariables(lines.get(0));
+        
+        
+                
+        for (int i = 1; i <= lines.size(); i++) {
+            Lexer lexer = new Lexer( new ByteArrayInputStream(lines.get(i).getBytes()));
+            
+            List<String> tokens = lexer.tokenizeAll(lines.get(i));
+            ShuntingYardSimpleParser reversePolishParser = ShuntingYardSimpleParser.getInstance();
+            List<String> reversePolishTokens = reversePolishParser.infixToReversePolishNotation(tokens);
+            String reversePolishTokenString = reversePolishParser.toPrettyFormat(reversePolishTokens);
+            
+            Constraint constraint = ExpressionParser.getInstance(reversePolishTokenString, variables).parse();
+            
+            Model model = new CPModel() ;
+            model.addConstraint(constraint);
+            
+            Solver solver = new CPSolver();
+            solver.read(model);
+            boolean hasSolution = solver.solve();
+            
+            if( hasSolution ){
+                this.extractAndWriteOficialResponse(solver);
+                this.extractAndWriteCompleteResponse(solver);
+                this.extractAndWriteConstraints(solver);
+            }else{
+                this.writeNotFeasibleResult();
+            }
+        }
+
+    }
+    
+    private void writeNotFeasibleResult(){
+        this.resolutionWriter.writeFile("Infeasible Result");
+    }
+    private void extractAndWriteOficialResponse(Solver solver){
+        DisposableIterator<IntDomainVar> it = solver.getIntVarIterator();
+            StringBuilder buffer = new StringBuilder();
+            buffer.append("(");
+            while( it.hasNext() ){
+                IntDomainVar var = it.next();
+                buffer.append(var.getVal());
+                buffer.append(",");
+            }
+            buffer.deleteCharAt(buffer.length() -1);
+            buffer.append("\n");
+            this.resolutionWriter.writeFile(buffer.toString());
+    }
+    
+    private void extractAndWriteCompleteResponse(Solver solver){
+        DisposableIterator<IntDomainVar> it = solver.getIntVarIterator();
+            StringBuilder buffer = new StringBuilder();
+            buffer.append("(");
+            while( it.hasNext() ){
+                IntDomainVar var = it.next();
+                buffer.append(var.getName()).append(" = ");
+                buffer.append(var.getVal());
+                buffer.append(" , ");
+            }
+            buffer.delete(buffer.length()-3, buffer.length());
+            buffer.append(")");
+            buffer.append("\n");
+            this.completeResolutionWriter.writeFile(buffer.toString());
+    }
+    
+    
+    private void extractAndWriteConstraints(Solver solver){
+        DisposableIterator<SConstraint> it = solver.getConstraintIterator();
+            StringBuilder buffer = new StringBuilder();
+            buffer.append("#");
+            while( it.hasNext() ){
+                SConstraint var = it.next();
+                buffer.append(var.pretty());
+            }
+            buffer.append("#");
+            buffer.append("\n");
+            this.constraintWriter.writeFile(buffer.toString());
     }
     
     // verifica se um componente é uma variavel pelo nome. Mas isso da problema com testes em programas que recebem strings.
