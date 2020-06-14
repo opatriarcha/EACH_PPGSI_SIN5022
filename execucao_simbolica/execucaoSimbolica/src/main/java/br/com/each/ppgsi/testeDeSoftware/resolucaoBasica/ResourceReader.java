@@ -32,7 +32,7 @@ public class ResourceReader {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/" + fileName)));
-            while(br.ready()){
+            while(br != null && br.ready()){
                 String linha = br.readLine();
                 resultSet.add(linha);
             }

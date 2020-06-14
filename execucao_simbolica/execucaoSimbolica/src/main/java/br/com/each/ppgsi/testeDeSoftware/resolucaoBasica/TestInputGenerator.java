@@ -4,23 +4,19 @@ import br.com.each.ppgsi.testeDeSoftware.shuntingYardParser.ShuntingYardSimplePa
 import br.usp.astExpressionParser.Commons;
 import br.usp.astExpressionParser.interpreter.ExpressionParser;
 import br.usp.astExpressionParser.lexer.Lexer;
-import choco.Choco;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
 import choco.kernel.common.util.iterators.DisposableIterator;
 import choco.kernel.model.Model;
 import choco.kernel.model.constraints.Constraint;
 import choco.kernel.model.variables.ComponentVariable;
-import choco.kernel.model.variables.integer.IntegerConstantVariable;
-import choco.kernel.model.variables.integer.IntegerVariable;
-import choco.kernel.model.variables.real.RealConstantVariable;
-import choco.kernel.model.variables.real.RealVariable;
 import choco.kernel.solver.Solver;
 import choco.kernel.solver.constraints.SConstraint;
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -126,6 +122,27 @@ public class TestInputGenerator {
         }
 
     }
+    //TODO
+    private List<String> generateLimitValueBasedONResult(final String resultLine){
+        List<String> resultSet = new LinkedList<>();
+        String temp = resultLine.substring(0 - resultLine.length() -1); //remove the parentesis
+        String[] entries = temp.split(",");
+        for( String entry : entries ){
+            
+        }
+        return resultSet;
+    }
+    
+    //TODO
+    private List<String> generateLimitValueBasedONEntries(final String resultLine){
+        List<String> resultSet = new LinkedList<>();
+        String temp = resultLine.substring(0 - resultLine.length() -1); //remove the parentesis
+        String[] entries = temp.split(",");
+        for( String entry : entries ){
+            
+        }
+        return resultSet;
+    }
     
     private void writeNotFeasibleResult(){
         this.resolutionWriter.writeFile("Infeasible Result");
@@ -213,20 +230,8 @@ public class TestInputGenerator {
     }
 
     public static void main(String[] args) {
-        IntegerVariable x3 = Choco.makeIntVar("var3", 0, 5);
-        IntegerConstantVariable icv100 = new IntegerConstantVariable(100);
-        RealVariable x1 = Choco.makeRealVar("varDouble", 0, 1.1);
-        RealConstantVariable realConstant = new RealConstantVariable(100);
-        ComponentVariable componentVariable = Choco.makeRealVar("varDouble", 0, 1.1);
-
-        Model model = new CPModel();
-        
-        model.addVariable(componentVariable);
-        Solver s = new CPSolver();
-
-        // Read the model 
-        s.read(model);
-        // Solve the problem
-        boolean temSolucao = s.solve();
+        TestInputGenerator generator = new TestInputGenerator();
+        //generator.executeWithResolver("/home/orlando/software_development/workspace/each_usp/EACH_PPGSI_SIN5022/execucao_simbolica/execucaoSimbolica/src/main/resources/exemplorestricoes.txt");
+        generator.executeWithResolver("/exemplorestricoes.txt");
     }
 }
