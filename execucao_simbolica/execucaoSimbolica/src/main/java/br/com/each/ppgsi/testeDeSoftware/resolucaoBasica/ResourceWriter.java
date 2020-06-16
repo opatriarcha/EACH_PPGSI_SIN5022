@@ -56,4 +56,10 @@ public class ResourceWriter {
             }
         }
     }
+    
+    public void deleteFile(){
+        File file = new File(this.fileName);
+        if( file.exists())
+            file.delete();
+    }
 }

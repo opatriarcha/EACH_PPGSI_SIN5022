@@ -3,6 +3,7 @@ package br.com.each.ppgsi.testeDeSoftware.shuntingYardParser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -23,12 +24,13 @@ public class ShuntingYardSimpleParser {
         OPERATORS.put("-", new int[] { 0, LEFT_ASSOC });
         OPERATORS.put("*", new int[] { 5, LEFT_ASSOC });
         OPERATORS.put("/", new int[] { 5, LEFT_ASSOC });
-        OPERATORS.put("<", new int[] { 9, LEFT_ASSOC });
-        OPERATORS.put("<=", new int[] { 9, LEFT_ASSOC });
-        OPERATORS.put(">", new int[] { 9, LEFT_ASSOC });
-        OPERATORS.put(">=", new int[] { 9, LEFT_ASSOC });
-        OPERATORS.put("=", new int[] { 9, LEFT_ASSOC });
-        OPERATORS.put("^", new int[] { 9, LEFT_ASSOC });
+        OPERATORS.put("<", new int[] { 7, LEFT_ASSOC });
+        OPERATORS.put("<=", new int[] { 7, LEFT_ASSOC });
+        OPERATORS.put(">", new int[] { 7, LEFT_ASSOC });
+        OPERATORS.put(">=", new int[] { 7, LEFT_ASSOC });
+        OPERATORS.put("=", new int[] { 7, LEFT_ASSOC });
+        OPERATORS.put("AND", new int[] { 9, LEFT_ASSOC });
+        OPERATORS.put("OR", new int[] { 9, LEFT_ASSOC });
     }
     
     private ShuntingYardSimpleParser(){
@@ -66,7 +68,7 @@ public class ShuntingYardSimpleParser {
     {
         List<String> out = new ArrayList<>();
         Stack<String> stack = new Stack<>();
-         
+        List<List<String>> compositeOutput = new LinkedList<>(); 
         
         for (String token : inputTokens){
             // Se for um operador

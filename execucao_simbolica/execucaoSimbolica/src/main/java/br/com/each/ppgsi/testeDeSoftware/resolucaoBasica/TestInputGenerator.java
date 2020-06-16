@@ -15,6 +15,8 @@ import choco.kernel.solver.constraints.SConstraint;
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,6 +50,8 @@ public class TestInputGenerator {
 
     public void execute(final String filename) {
         ResourceReader reader = ResourceReader.getInstance();
+        this.cleanResources();
+        
         InstructionParser parser = InstructionParser.getinstance();
         List<String> lines = reader.read(filename);
 
@@ -85,42 +89,116 @@ public class TestInputGenerator {
     
     public void executeWithResolver(final String filename) {
         ResourceReader reader = ResourceReader.getInstance();
+        StringBuilder constraintReportBuffer = new StringBuilder();
+        StringBuilder completerReportBuffer = new StringBuilder();
+        StringBuilder oficialResponseBuffer = new StringBuilder();
         
+        this.cleanResources();
         
         List<String> lines = reader.read(filename);
 
-        List<String> predicates = new ArrayList<>();
+//        List<String> predicates = new ArrayList<>();
         InstructionParser parser = InstructionParser.getinstance();
         List<String> variables = parser.parseVariables(lines.get(0));
         
-        
-                
-        for (int i = 1; i <= lines.size(); i++) {
+        //não é a melhor solução para tratar as constraints do tipo and do choco, mas... é o q tem pra hj
+        for (int i = 1; i < lines.size(); i++) {
             Lexer lexer = new Lexer( new ByteArrayInputStream(lines.get(i).getBytes()));
-            
-            List<String> tokens = lexer.tokenizeAll(lines.get(i));
-            ShuntingYardSimpleParser reversePolishParser = ShuntingYardSimpleParser.getInstance();
-            List<String> reversePolishTokens = reversePolishParser.infixToReversePolishNotation(tokens);
-            String reversePolishTokenString = reversePolishParser.toPrettyFormat(reversePolishTokens);
-            
-            Constraint constraint = ExpressionParser.getInstance(reversePolishTokenString, variables).parse();
+            List<Constraint> constraints = new LinkedList<>();
+            List<String> lista = this.groupByConjunction(lines.get(i));
+            for(String andExpression : lista ){
+                List<String> tokens = lexer.tokenizeAll(andExpression);
+                printList("TOKENIZER: ", tokens);
+
+                ShuntingYardSimpleParser reversePolishParser = ShuntingYardSimpleParser.getInstance();
+                List<String> reversePolishTokens = reversePolishParser.infixToReversePolishNotation(tokens);
+                printList("Reverse Polish Notation: ", reversePolishTokens);
+                String reversePolishTokenString = reversePolishParser.toPrettyFormat(reversePolishTokens);
+
+                System.out.println("REVERSE POLISH NOTATION PRETTY FORMAT: " + reversePolishTokenString);
+                Constraint constraint = ExpressionParser.getInstance(reversePolishTokenString, variables).parse();
+                System.out.println("CONSTRAINT: " + constraint.pretty());
+                constraints.add(constraint);
+            }
+            //Constraint finalConstraint = ExpressionParser.concatenateConstraints(constraints);// ^É um concatenador ou um AND???
             
             Model model = new CPModel() ;
-            model.addConstraint(constraint);
+            
+            for( Constraint constraint : constraints ){
+                model.addConstraint(constraint);
+            }
             
             Solver solver = new CPSolver();
             solver.read(model);
             boolean hasSolution = solver.solve();
             
             if( hasSolution ){
-                this.extractAndWriteOficialResponse(solver);
-                this.extractAndWriteCompleteResponse(solver);
-                this.extractAndWriteConstraints(solver);
+                this.buildOfficialResponse(oficialResponseBuffer, solver);
+                this.buildCompleteResponse(completerReportBuffer, solver);
+                this.buildConstraintsReport(constraintReportBuffer, solver);
             }else{
-                this.writeNotFeasibleResult();
+                this.buildNotFeasibleLineReport(completerReportBuffer);
+                this.buildNotFeasibleLineReport(oficialResponseBuffer);
+                this.buildConstraintsReport(constraintReportBuffer, solver);
             }
         }
+        this.completeResolutionWriter.writeFile(completerReportBuffer.toString());
+        this.resolutionWriter.writeFile(oficialResponseBuffer.toString());
+        this.constraintWriter.writeFile(constraintReportBuffer.toString());
 
+    }
+
+    private void cleanResources() {
+        this.resolutionWriter.deleteFile();
+        this.completeResolutionWriter.deleteFile();
+        this.constraintWriter.deleteFile();
+    }
+    
+    private void buildOfficialResponse(StringBuilder buffer, Solver solver){
+            DisposableIterator<IntDomainVar> it = solver.getIntVarIterator();
+            buffer.append("(");
+            while( it.hasNext() ){
+                IntDomainVar var = it.next();
+                buffer.append(var.getVal());
+                buffer.append(",");
+            }
+            buffer.deleteCharAt(buffer.length() -1);
+            buffer.append(")\n");
+    }
+    
+    private void buildCompleteResponse(StringBuilder buffer, Solver solver ){
+        DisposableIterator<IntDomainVar> it = solver.getIntVarIterator();
+            
+            buffer.append("(");
+            while( it.hasNext() ){
+                IntDomainVar var = it.next();
+                buffer.append(var.getName()).append(" = ");
+                buffer.append(var.getVal());
+                buffer.append(" , ");
+            }
+            buffer.delete(buffer.length()-3, buffer.length());
+            buffer.append(")");
+            buffer.append("\n");
+    }
+    
+    private void buildConstraintsReport(StringBuilder buffer, Solver solver){
+        DisposableIterator<SConstraint> it = solver.getConstraintIterator();
+            buffer.append("#");
+            while( it.hasNext() ){
+                SConstraint var = it.next();
+                buffer.append(var.pretty());
+            }
+            buffer.append("#");
+            buffer.append("\n");
+    }
+    private void printList( String message, List<String> lista){
+        StringBuilder builder = new StringBuilder();
+        builder.append(message);
+        for( String str : lista ){
+            builder.append( str ).append(" ");
+        }
+        builder.deleteCharAt(builder.length() -1);
+        System.out.println(builder.toString());
     }
     //TODO
     private List<String> generateLimitValueBasedONResult(final String resultLine){
@@ -144,6 +222,9 @@ public class TestInputGenerator {
         return resultSet;
     }
     
+    private void buildNotFeasibleLineReport(StringBuilder builder ){
+        builder.append("Infeasible Result");
+    }
     private void writeNotFeasibleResult(){
         this.resolutionWriter.writeFile("Infeasible Result");
     }
@@ -157,7 +238,7 @@ public class TestInputGenerator {
                 buffer.append(",");
             }
             buffer.deleteCharAt(buffer.length() -1);
-            buffer.append("\n");
+            buffer.append(")\n");
             this.resolutionWriter.writeFile(buffer.toString());
     }
     
@@ -228,10 +309,17 @@ public class TestInputGenerator {
     private Integer retrieveInteger( String componentInstruction ){
         return Integer.parseInt(componentInstruction);
     }
+    
+    private List<String> groupByConjunction( final String line ){
+        if( line.contains("^" ) )//deixa sem OR por enquanto
+            return Arrays.asList(line.split("\\^"));
+        return Arrays.asList(line);
+    }
 
     public static void main(String[] args) {
+
         TestInputGenerator generator = new TestInputGenerator();
         //generator.executeWithResolver("/home/orlando/software_development/workspace/each_usp/EACH_PPGSI_SIN5022/execucao_simbolica/execucaoSimbolica/src/main/resources/exemplorestricoes.txt");
-        generator.executeWithResolver("/exemplorestricoes.txt");
+        generator.executeWithResolver("exemplorestricoes.txt");
     }
 }
