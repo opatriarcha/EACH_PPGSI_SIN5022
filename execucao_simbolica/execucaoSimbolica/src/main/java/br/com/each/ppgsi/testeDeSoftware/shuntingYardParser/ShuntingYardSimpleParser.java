@@ -20,17 +20,20 @@ public class ShuntingYardSimpleParser {
   
     private static final Map<String, int[]> OPERATORS = new HashMap<String, int[]>();
     static{
-        OPERATORS.put("+", new int[] { 0, LEFT_ASSOC });
-        OPERATORS.put("-", new int[] { 0, LEFT_ASSOC });
-        OPERATORS.put("*", new int[] { 5, LEFT_ASSOC });
-        OPERATORS.put("/", new int[] { 5, LEFT_ASSOC });
-        OPERATORS.put("<", new int[] { 7, LEFT_ASSOC });
-        OPERATORS.put("<=", new int[] { 7, LEFT_ASSOC });
-        OPERATORS.put(">", new int[] { 7, LEFT_ASSOC });
-        OPERATORS.put(">=", new int[] { 7, LEFT_ASSOC });
-        OPERATORS.put("=", new int[] { 7, LEFT_ASSOC });
+        OPERATORS.put("+", new int[] { 3, LEFT_ASSOC });
+        OPERATORS.put("-", new int[] { 3, LEFT_ASSOC });
+        OPERATORS.put("*", new int[] { 4, LEFT_ASSOC });
+        OPERATORS.put("/", new int[] { 4, LEFT_ASSOC });
+        OPERATORS.put("<", new int[] { 5, LEFT_ASSOC });
+        OPERATORS.put("<=", new int[] { 5, LEFT_ASSOC });
+        OPERATORS.put(">", new int[] { 5, LEFT_ASSOC });
+        OPERATORS.put(">=", new int[] { 5, LEFT_ASSOC });
+        OPERATORS.put("<>", new int[] { 5, LEFT_ASSOC });
+        OPERATORS.put("=", new int[] { 5, LEFT_ASSOC });
         OPERATORS.put("AND", new int[] { 9, LEFT_ASSOC });
         OPERATORS.put("OR", new int[] { 9, LEFT_ASSOC });
+        OPERATORS.put("^", new int[] { 9, LEFT_ASSOC });
+        OPERATORS.put("||", new int[] { 9, LEFT_ASSOC });
     }
     
     private ShuntingYardSimpleParser(){
@@ -60,7 +63,9 @@ public class ShuntingYardSimpleParser {
         if (!isOperator(token1) || !isOperator(token2)){
             throw new IllegalArgumentException("Invalid tokens: " + token1  + " " + token2);
         }
-        return OPERATORS.get(token1)[0] - OPERATORS.get(token2)[0];
+        Integer result = OPERATORS.get(token1)[0] - OPERATORS.get(token2)[0];
+        System.out.println("PRECEDENCE: " + token1 + " " + token2 + " precendence: " + result);
+        return result;
     }
   
     // Converte INFIX para RESVERSE POLISH
@@ -68,22 +73,31 @@ public class ShuntingYardSimpleParser {
     {
         List<String> out = new ArrayList<>();
         Stack<String> stack = new Stack<>();
-        List<List<String>> compositeOutput = new LinkedList<>(); 
-        
+        //List<List<String>> compositeOutput = new LinkedList<>(); tentativa de preservar expressões dentro de expressões. 
+        Stack<String> visitedTokens = new Stack<>();
         for (String token : inputTokens){
+//            System.out.println("TOKRN: " + token);
             // Se for um operador
             if (isOperator(token)){  
+                visitedTokens.push(token);
                 //pilha não vazia e é um operator
                 while (!stack.empty() && isOperator(stack.peek())){                    
-                    if ((isAssociativeComponent(token, LEFT_ASSOC)         && 
-                         assertPrecedence(token, stack.peek()) <= 0) || 
-                        (isAssociativeComponent(token, RIGHT_ASSOC)        && 
-                         assertPrecedence(token, stack.peek()) < 0)){
-                        out.add(stack.pop());   
-                        continue;
+//                    if ((isAssociativeComponent(token, LEFT_ASSOC) && assertPrecedence(token, stack.peek()) <= 0) || 
+//                        (isAssociativeComponent(token, RIGHT_ASSOC) && assertPrecedence(token, stack.peek()) < 0)){
+//                        out.add(stack.pop());   
+//                        continue;
+//                    }
+//                    break;
+                    if( visitedTokens.size() > 1){
+                        String previousToken = visitedTokens.peek();
+                        if( OPERATORS.get(token)[0] < OPERATORS.get(previousToken)[0]){
+                            out.add(stack.pop());
+                            continue;
+                        }
                     }
                     break;
                 }
+                
                 // poe na pilha o novo oeprador
                 stack.push(token);
             } 

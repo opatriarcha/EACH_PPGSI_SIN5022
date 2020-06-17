@@ -23,17 +23,17 @@ public class TrianguloSolution {
 		IntegerVariable ladoB = Choco.makeIntVar("ladoB", 1, 1000);
 		IntegerVariable ladoC = Choco.makeIntVar("ladoC", 1, 1000);
 		
-		IntegerExpressionVariable exp1 = Choco.plus(ladoB,ladoC);
-        IntegerExpressionVariable exp2 = Choco.plus(ladoA,ladoC);
-        IntegerExpressionVariable exp3 = Choco.plus(ladoA,ladoB);                       
+		IntegerExpressionVariable somaBC = Choco.plus(ladoB,ladoC); //LB +LC
+        IntegerExpressionVariable somaAC = Choco.plus(ladoA,ladoC); //LA+LC
+        IntegerExpressionVariable somaAB = Choco.plus(ladoA,ladoB); //LA+LB               
 		
 		Model m = new CPModel();
-		Constraint C1 = Choco.lt(ladoA, exp1);			
-		Constraint C2 = Choco.lt(ladoB, exp2);
-		Constraint C3 = Choco.lt(ladoC, exp3);
-		Constraint C4 = Choco.neq(ladoA, ladoB);
-		Constraint C5 = Choco.neq(ladoB, ladoC);				
-		Constraint C6 = Choco.neq(ladoA, ladoC);
+		Constraint C1 = Choco.lt(ladoA, somaBC);		//LA > LA+LB	
+		Constraint C2 = Choco.lt(ladoB, somaAC);          //LB > LA+LC
+		Constraint C3 = Choco.lt(ladoC, somaAB);          //LC > LA+LB
+		Constraint C4 = Choco.neq(ladoA, ladoB);        //LA <> LB
+		Constraint C5 = Choco.neq(ladoB, ladoC);	//LB <> LC			
+		Constraint C6 = Choco.neq(ladoA, ladoC);        //LA <> LC
 		
 		m.addConstraint(C1) ;
 		m.addConstraint(C2) ;

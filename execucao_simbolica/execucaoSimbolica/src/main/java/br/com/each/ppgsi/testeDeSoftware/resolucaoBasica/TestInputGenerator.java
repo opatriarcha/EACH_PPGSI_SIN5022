@@ -103,13 +103,17 @@ public class TestInputGenerator {
         
         //não é a melhor solução para tratar as constraints do tipo and do choco, mas... é o q tem pra hj
         for (int i = 1; i < lines.size(); i++) {
-            Lexer lexer = new Lexer( new ByteArrayInputStream(lines.get(i).getBytes()));
+            String subject = lines.get(i);
+            if( subject.trim().startsWith("#"))
+                continue; // Igonre commented lines
+            Lexer lexer = new Lexer( new ByteArrayInputStream(subject.getBytes()));
             List<Constraint> constraints = new LinkedList<>();
             List<String> lista = this.groupByConjunction(lines.get(i));
             for(String andExpression : lista ){
+                
                 List<String> tokens = lexer.tokenizeAll(andExpression);
                 printList("TOKENIZER: ", tokens);
-
+                //"X < 0 AND Y > 0" = (X 0 <) (Y 0 >) AND  
                 ShuntingYardSimpleParser reversePolishParser = ShuntingYardSimpleParser.getInstance();
                 List<String> reversePolishTokens = reversePolishParser.infixToReversePolishNotation(tokens);
                 printList("Reverse Polish Notation: ", reversePolishTokens);
@@ -124,9 +128,10 @@ public class TestInputGenerator {
             
             Model model = new CPModel() ;
             
-            for( Constraint constraint : constraints ){
-                model.addConstraint(constraint);
+            for( Constraint c : constraints ){
+                model.addConstraint(c);
             }
+            //model.addConstraints((Constraint[]) constraints.toArray());
             
             Solver solver = new CPSolver();
             solver.read(model);
@@ -313,7 +318,17 @@ public class TestInputGenerator {
     private List<String> groupByConjunction( final String line ){
         if( line.contains("^" ) )//deixa sem OR por enquanto
             return Arrays.asList(line.split("\\^"));
+        if( line.contains("||" ) )//deixa sem OR por enquanto
+            return Arrays.asList(line.split("||"));
         return Arrays.asList(line);
+    }
+    
+    private boolean hasANDConjunction( final String line){
+        return line.contains("^");
+    }
+    
+    private boolean hasOrConjunction( final String line){
+        return line.contains("||");
     }
 
     public static void main(String[] args) {
