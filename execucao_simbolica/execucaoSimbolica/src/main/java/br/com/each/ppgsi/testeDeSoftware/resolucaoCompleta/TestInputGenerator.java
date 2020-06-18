@@ -1,30 +1,30 @@
-package br.com.each.ppgsi.testeDeSoftware.resolucaoBasica;
+package br.com.each.ppgsi.testeDeSoftware.resolucaoCompleta;
 
+import br.com.each.ppgsi.testeDeSoftware.infrastructure.ResourceWriterImpl;
+import br.com.each.ppgsi.testeDeSoftware.infrastructure.ResourceReaderImpl;
+import br.com.each.ppgsi.testeDeSoftware.infrastructure.IResourceReader;
+import br.com.each.ppgsi.testeDeSoftware.infrastructure.IResoureWriter;
+import br.com.each.ppgsi.testeDeSoftware.commons.Commons;
+import br.com.each.ppgsi.testeDeSoftware.lexerAnalyser.ILexerAnalyser;
+import br.com.each.ppgsi.testeDeSoftware.lexerAnalyser.LexerAnalyserImpl;
+import br.com.each.ppgsi.testeDeSoftware.shuntingYardParser.IShuntingYardParser;
 import br.com.each.ppgsi.testeDeSoftware.shuntingYardParser.ShuntingYardParserImpl;
-import br.usp.astExpressionParser.Commons;
-import br.usp.astExpressionParser.interpreter.ExpressionParser;
-import br.usp.astExpressionParser.interpreter.implementations.Integer.IntegerVariableExpression;
-import br.usp.astExpressionParser.lexer.Lexer;
-import choco.Choco;
+import br.com.ppgsi.testeDeSoftware.Interpreter.ExpressionParser;
+import br.com.ppgsi.testeDeSoftware.Interpreter.integer.IntegerVariableExpression;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
 import choco.kernel.common.util.iterators.DisposableIterator;
 import choco.kernel.model.Model;
 import choco.kernel.model.constraints.Constraint;
-import choco.kernel.model.variables.ComponentVariable;
-import choco.kernel.model.variables.integer.IntegerConstantVariable;
-import choco.kernel.model.variables.integer.IntegerExpressionVariable;
 import choco.kernel.solver.Solver;
 import choco.kernel.solver.constraints.SConstraint;
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -32,51 +32,12 @@ import java.util.Map;
  */
 public class TestInputGenerator {
     
-    private final ResourceWriter resolutionWriter = new ResourceWriter(Commons.RESOLUTION_DESTINATION_PATH);
-    private final ResourceWriter completeResolutionWriter = new ResourceWriter(Commons.COMPLETE_RESOLUTION_DESTINATION_PATH);
-    private final ResourceWriter constraintWriter = new ResourceWriter(Commons.CONSTRAINTS_DESTINATION_PATH);
-    
-
-//    public void execute(final String filename) {
-//        ResourceReader reader = ResourceReader.getInstance();
-//        this.cleanResources();
-//        
-//        InstructionParser parser = InstructionParser.getinstance();
-//        List<String> lines = reader.read(filename);
-//
-//        List<String> variables = parser.parseVariables(lines.get(0));
-//
-//        for (int i = 1; i <= lines.size(); i++) {
-//            List<String> blocks = parser.parsePredicates(lines.get(i));
-//            for( String item : blocks ){
-//                List<String> instructions = parser.parsePredicateBody(item);
-//                List<ComponentVariable> components = new ArrayList<>();
-//                ComponentVariable variable = null;
-//                Double doubleVariable = null;
-//                Integer integerVariavle = null;
-//                //ExpressionVariable = null; parei aqui
-//                for (String instruction : instructions) {
-//                    System.out.println(instruction);
-//                    if(isVariable(variables, instruction)){
-//                        // fazer algo
-//                    }
-//                    if(isOperator(instruction)){
-//                        
-//                    }
-//                    if(isNumberValue(instruction)){
-//                        
-//                    }
-//                    
-//                }
-//            }
-//            
-//            
-//        }
-//
-//    }
+    private final IResoureWriter resolutionWriter = new ResourceWriterImpl(Commons.RESOLUTION_DESTINATION_PATH);
+    private final IResoureWriter completeResolutionWriter = new ResourceWriterImpl(Commons.COMPLETE_RESOLUTION_DESTINATION_PATH);
+    private final IResoureWriter constraintWriter = new ResourceWriterImpl(Commons.CONSTRAINTS_DESTINATION_PATH);
     
     public void executeWithResolver(final String filename) {
-        ResourceReader reader = ResourceReader.getInstance();
+        IResourceReader reader = ResourceReaderImpl.getInstance();
         List<String> lines = reader.read(filename);
         this.cleanResources();
         ResultSetHolder holder = this.executeInternal(lines);
@@ -96,7 +57,7 @@ public class TestInputGenerator {
             String subject = lines.get(i);
             if( subject.trim().startsWith("#"))
                 continue; // Igonre commented lines
-            Lexer lexer = new Lexer( new ByteArrayInputStream(subject.getBytes()));
+            ILexerAnalyser lexer = new LexerAnalyserImpl( new ByteArrayInputStream(subject.getBytes()));
             List<Constraint> constraints = new LinkedList<>();
             List<String> lista = this.groupByConjunction(lines.get(i));
             HashMap<String, IntegerVariableExpression> variablesHolder = new HashMap<>();
@@ -105,7 +66,7 @@ public class TestInputGenerator {
                 List<String> tokens = lexer.tokenizeAll(andExpression);
                 printList("TOKENIZER: ", tokens);
                 //"X < 0 AND Y > 0" = (X 0 <) (Y 0 >) AND  
-                ShuntingYardParserImpl reversePolishParser = ShuntingYardParserImpl.getInstance();
+                IShuntingYardParser reversePolishParser = ShuntingYardParserImpl.getInstance();
                 List<String> reversePolishTokens = reversePolishParser.infixToReversePolishNotation(tokens);
                 printList("Reverse Polish Notation: ", reversePolishTokens);
                 String reversePolishTokenString = reversePolishParser.toPrettyFormat(reversePolishTokens);
@@ -157,6 +118,8 @@ public class TestInputGenerator {
             buffer.append("(");
             while( it.hasNext() ){
                 IntDomainVar var = it.next();
+                if(var.getName().startsWith("TMP"))
+                    continue;
                 buffer.append(var.getVal());
                 buffer.append(",");
             }
@@ -170,6 +133,8 @@ public class TestInputGenerator {
             buffer.append("(");
             while( it.hasNext() ){
                 IntDomainVar var = it.next();
+                if(var.getName().startsWith("TMP"))
+                    continue;
                 buffer.append(var.getName()).append(" = ");
                 buffer.append(var.getVal());
                 buffer.append(" , ");
@@ -186,7 +151,9 @@ public class TestInputGenerator {
             while( it.hasNext() ){
                 Constraint c = it.next();
                 buffer.append(c.pretty());
+                //buffer.append("\n");
             }
+            //buffer.delete(buffer.length()-1, buffer.length());
            
     }
     private void printList( String message, List<String> lista){

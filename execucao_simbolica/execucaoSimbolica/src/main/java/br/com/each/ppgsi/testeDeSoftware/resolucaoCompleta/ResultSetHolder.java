@@ -1,4 +1,4 @@
-package br.com.each.ppgsi.testeDeSoftware.resolucaoBasica;
+package br.com.each.ppgsi.testeDeSoftware.resolucaoCompleta;
 
 import jdk.jfr.DataAmount;
 import lombok.Data;

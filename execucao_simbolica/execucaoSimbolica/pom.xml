@@ -32,11 +32,7 @@
             <version>2.1.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>br.usp.astExpressionParser</groupId>
-            <artifactId>expressionParser</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+        
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

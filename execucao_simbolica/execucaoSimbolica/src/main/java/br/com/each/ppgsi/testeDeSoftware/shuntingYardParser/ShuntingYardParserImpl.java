@@ -1,9 +1,7 @@
 package br.com.each.ppgsi.testeDeSoftware.shuntingYardParser;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -12,18 +10,18 @@ import java.util.Stack;
  * Thanks to Dijkstra ( he is watching! )
  * @author orlando
  */
-public class ShuntingYardParserImpl {
+public class ShuntingYardParserImpl implements IShuntingYardParser {
 
     // trocar por enum pq isso é muito feio!!!
     private static final int LEFT_ASSOC  = 0;
-    private static final int RIGHT_ASSOC = 1;
+    private static final int RIGHT_ASSOC = 1; // decidi noa usar mas fica aqui pra psteridade ex operador NOT
   
     private static final Map<String, int[]> OPERATORS = new HashMap<String, int[]>();
     static{
-        OPERATORS.put("+", new int[] { 3, LEFT_ASSOC });
-        OPERATORS.put("-", new int[] { 3, LEFT_ASSOC });
-        OPERATORS.put("*", new int[] { 4, LEFT_ASSOC });
-        OPERATORS.put("/", new int[] { 4, LEFT_ASSOC });
+        OPERATORS.put("+", new int[] { 4, LEFT_ASSOC });
+        OPERATORS.put("-", new int[] { 4, LEFT_ASSOC });
+        OPERATORS.put("*", new int[] { 3, LEFT_ASSOC });
+        OPERATORS.put("/", new int[] { 3, LEFT_ASSOC });
         OPERATORS.put("<", new int[] { 5, LEFT_ASSOC });
         OPERATORS.put("<=", new int[] { 5, LEFT_ASSOC });
         OPERATORS.put(">", new int[] { 5, LEFT_ASSOC });
@@ -69,6 +67,7 @@ public class ShuntingYardParserImpl {
     }
   
     // Converte INFIX para RESVERSE POLISH
+    @Override
     public List<String> infixToReversePolishNotation(List<String> inputTokens) 
     {
         List<String> out = new ArrayList<>();
@@ -132,6 +131,7 @@ public class ShuntingYardParserImpl {
         return Double.valueOf(stack.pop());
     }
     
+    @Override
     public String toPrettyFormat(List<String> valueList){
         StringBuilder builder = new StringBuilder();
         for( String value: valueList){
@@ -140,20 +140,6 @@ public class ShuntingYardParserImpl {
         String result = builder.toString();
         return result.trim();
     }
-  
-    public static void main(String[] args) {
-        ShuntingYardParserImpl parser = ShuntingYardParserImpl.getInstance();
-        String[] input = "( 1 + 2 ) * ( 3 / 4 ) - ( 5 + 6 )".split(" ");
-        //String[] input = "( ( X > 0 ) ^ ( Y <= 5 ) ) ^ ( X < Y + 5 )".split(" ");
-        List<String> output = parser.infixToReversePolishNotation(Arrays.asList(input));
-         
-        // constroi a string tirando os parentesis
-         for (String token : output) {
-            System.out.print(token + " ");
-        }
-         
-        // Resultado
-        Double result = RPNtoDouble( output );  
-        System.out.println("RESULTDOUBLE: " + result);
-    }
+    
+    //( 1 + 2 ) * ( 3 / 4 ) - ( 5 + 6 )
 }

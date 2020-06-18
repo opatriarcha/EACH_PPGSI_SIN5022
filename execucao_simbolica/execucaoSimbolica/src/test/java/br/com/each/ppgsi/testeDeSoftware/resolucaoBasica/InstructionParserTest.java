@@ -1,5 +1,6 @@
 package br.com.each.ppgsi.testeDeSoftware.resolucaoBasica;
 
+import br.com.each.ppgsi.testeDeSoftware.resolucaoCompleta.InstructionParser;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,44 +32,6 @@ public class InstructionParserTest {
         List<String> result = parser.parseVariables(SIMPLE_CASE_VARIABLES);
         Assert.assertEquals("X", result.get(0));
         Assert.assertEquals("Y", result.get(1));
-    }
-    
-    @Test
-    public void removeOuterParentesis(){
-        String input = "stuff1 (foo1(bar1)foo2) stuff2 (bar2) stuff3";
-        InstructionParser parser = InstructionParser.getinstance();
-        String result = parser.removeOuterParentesis(input); 
-        System.out.println(result);
-        //Assert.assertEquals("foo1bar1foo2 stuff2 bar2", result);
-        Assert.assertEquals("stuff1 foo1bar1foo2 stuff2 bar2 stuff3", result);
-    }
-    
-    @Test
-    public void removeOuterParentesisReal(){
-        InstructionParser parser = InstructionParser.getinstance();
-        String result = parser.removeOuterParentesis(SIMPLE_CASE_INSTRUCTION_2); 
-        System.out.println(result);
-        Assert.assertEquals("X > 0 ^ Y > 5", result);
-    }
-    
-    @Test
-    public void testParseInnerPredicate(){
-        InstructionParser parser = InstructionParser.getinstance();
-        String input = parser.removeOuterParentesis(SIMPLE_CASE_INSTRUCTION_1);
-        List<String> result = parser.parseInnerPredicate(input);
-        Assert.assertEquals("X", result.get(0));
-        Assert.assertEquals("<", result.get(1));
-        Assert.assertEquals("0", result.get(2));
-    }
-    
-    @Test
-    public void testParseInnerPredicateDoubleOperator(){
-        InstructionParser parser = InstructionParser.getinstance();
-        String input = parser.removeOuterParentesis(DOUBLE_INSTRUCTION_1);
-        List<String> result = parser.parseInnerPredicate(input);
-        Assert.assertEquals("X", result.get(0));
-        Assert.assertEquals("<=", result.get(1));
-        Assert.assertEquals("0", result.get(2));
     }
     
 }

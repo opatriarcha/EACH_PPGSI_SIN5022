@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.each.ppgsi.testeDeSoftware.bouerAndSamelsonAlgorithm;
 
-import static java.lang.System.in;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
@@ -16,11 +10,12 @@ import java.util.regex.Pattern;
  *
  * @author orlando
  */
+@Deprecated(since="Desde que eu fiz o ShutingYard")
 public class InfixToPolishAlgorithm {
     protected static Stack<String> convertToPolish(String in) {
-    Stack<String> inputString = new Stack<String>();
-    Stack<String> outputString = new Stack<String>();
-    Stack<String> store = new Stack<String>();
+    Stack<String> inputString = new Stack<>();
+    Stack<String> outputString = new Stack<>();
+    Stack<String> store = new Stack<>();
 
     inputString.addAll(reverse(splitForExpressonsArray(in)));
 
