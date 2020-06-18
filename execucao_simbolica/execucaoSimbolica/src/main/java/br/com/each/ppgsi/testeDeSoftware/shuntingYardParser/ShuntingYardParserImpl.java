@@ -12,7 +12,7 @@ import java.util.Stack;
  * Thanks to Dijkstra ( he is watching! )
  * @author orlando
  */
-public class ShuntingYardSimpleParser {
+public class ShuntingYardParserImpl {
 
     // trocar por enum pq isso é muito feio!!!
     private static final int LEFT_ASSOC  = 0;
@@ -29,25 +29,26 @@ public class ShuntingYardSimpleParser {
         OPERATORS.put(">", new int[] { 5, LEFT_ASSOC });
         OPERATORS.put(">=", new int[] { 5, LEFT_ASSOC });
         OPERATORS.put("<>", new int[] { 5, LEFT_ASSOC });
-        OPERATORS.put("=", new int[] { 5, LEFT_ASSOC });
+        OPERATORS.put("==", new int[] { 5, LEFT_ASSOC });
         OPERATORS.put("AND", new int[] { 9, LEFT_ASSOC });
         OPERATORS.put("OR", new int[] { 9, LEFT_ASSOC });
         OPERATORS.put("^", new int[] { 9, LEFT_ASSOC });
         OPERATORS.put("||", new int[] { 9, LEFT_ASSOC });
+        OPERATORS.put("!=", new int[] { 5, LEFT_ASSOC });
     }
     
-    private ShuntingYardSimpleParser(){
+    private ShuntingYardParserImpl(){
     }
   
-    public static ShuntingYardSimpleParser getInstance(){
-        return new ShuntingYardSimpleParser();
+    public static ShuntingYardParserImpl getInstance(){
+        return new ShuntingYardParserImpl();
     }
     
     private static boolean isOperator(String token){
         return OPERATORS.containsKey(token);
     }
   
-    // Testa a associativiade
+    // Testa a associativiade nao precisa depois da nova gambiarra
     private static boolean isAssociativeComponent(String token, int type) 
     {
         if (!isOperator(token))
@@ -57,8 +58,7 @@ public class ShuntingYardSimpleParser {
             return true;
         return false;
     }
-  
-    // Compare precedence of operators.    
+     
     private static final int assertPrecedence(String token1, String token2){
         if (!isOperator(token1) || !isOperator(token2)){
             throw new IllegalArgumentException("Invalid tokens: " + token1  + " " + token2);
@@ -73,21 +73,11 @@ public class ShuntingYardSimpleParser {
     {
         List<String> out = new ArrayList<>();
         Stack<String> stack = new Stack<>();
-        //List<List<String>> compositeOutput = new LinkedList<>(); tentativa de preservar expressões dentro de expressões. 
         Stack<String> visitedTokens = new Stack<>();
         for (String token : inputTokens){
-//            System.out.println("TOKRN: " + token);
-            // Se for um operador
             if (isOperator(token)){  
                 visitedTokens.push(token);
-                //pilha não vazia e é um operator
                 while (!stack.empty() && isOperator(stack.peek())){                    
-//                    if ((isAssociativeComponent(token, LEFT_ASSOC) && assertPrecedence(token, stack.peek()) <= 0) || 
-//                        (isAssociativeComponent(token, RIGHT_ASSOC) && assertPrecedence(token, stack.peek()) < 0)){
-//                        out.add(stack.pop());   
-//                        continue;
-//                    }
-//                    break;
                     if( visitedTokens.size() > 1){
                         String previousToken = visitedTokens.peek();
                         if( OPERATORS.get(token)[0] < OPERATORS.get(previousToken)[0]){
@@ -97,15 +87,11 @@ public class ShuntingYardSimpleParser {
                     }
                     break;
                 }
-                
-                // poe na pilha o novo oeprador
                 stack.push(token);
-            } 
-            
+            }             
             else if (token.equals("(")){
                 stack.push(token);   
             } 
-            
             else if (token.equals(")")){                
                 while (!stack.empty() && !stack.peek().equals("(")){
                     out.add(stack.pop()); 
@@ -125,33 +111,24 @@ public class ShuntingYardSimpleParser {
     }
      
     public static double RPNtoDouble(List<String> tokens){        
-        Stack<String> stack = new Stack<String>();
-         
-        // For each token 
+        Stack<String> stack = new Stack<>();
         for (String token : tokens) 
         {
-            // If the token is a value push it onto the stack
-            if (!isOperator(token)) 
-            {
+            if (!isOperator(token))
                 stack.push(token);                
-            }
-            else
-            {
-                // Token is an operator: pop top two entries
-                Double d2 = Double.valueOf( stack.pop() );
-                Double d1 = Double.valueOf( stack.pop() );
+            else{
+                Double second = Double.valueOf( stack.pop() );
+                Double first = Double.valueOf( stack.pop() );
                  
                 //Get the result
-                Double result = token.compareTo("+") == 0 ? d1 + d2 : 
-                                token.compareTo("-") == 0 ? d1 - d2 :
-                                token.compareTo("*") == 0 ? d1 * d2 :
-                                                            d1 / d2;               
+                Double result = token.compareTo("+") == 0 ? first + second : 
+                                token.compareTo("-") == 0 ? first - second :
+                                token.compareTo("*") == 0 ? first * second :
+                                                            first / second;               
                                  
-                // Push result onto stack
                 stack.push( String.valueOf( result ));                                                
             }                        
         }        
-         
         return Double.valueOf(stack.pop());
     }
     
@@ -165,7 +142,7 @@ public class ShuntingYardSimpleParser {
     }
   
     public static void main(String[] args) {
-        ShuntingYardSimpleParser parser = ShuntingYardSimpleParser.getInstance();
+        ShuntingYardParserImpl parser = ShuntingYardParserImpl.getInstance();
         String[] input = "( 1 + 2 ) * ( 3 / 4 ) - ( 5 + 6 )".split(" ");
         //String[] input = "( ( X > 0 ) ^ ( Y <= 5 ) ) ^ ( X < Y + 5 )".split(" ");
         List<String> output = parser.infixToReversePolishNotation(Arrays.asList(input));

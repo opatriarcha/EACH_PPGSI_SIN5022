@@ -40,8 +40,10 @@ public class TrianguloSolution {
 		m.addConstraint(C3) ;
 		m.addConstraint(C4) ;
 		m.addConstraint(C5) ;
-		m.addConstraint(C6) ;		
-		
+		m.addConstraint(C6) ;	
+                m.addVariable(ladoA);
+		m.addVariable(ladoB);
+                m.addVariable(ladoC);
 		Solver s = new CPSolver();
 		
 		// Read the model
@@ -77,6 +79,26 @@ public class TrianguloSolution {
 		int LB = s.getVar(ladoB) .getVal();
 		int LC = s.getVar(ladoC) .getVal();
 		System.out.println("("+LA+","+LB+","+LC+")");
+                
+                System.out.println("OUTRO RESULTADO");
+                TrianguloSolution.buildCompleteResponse(s);
+                
 	}
+        
+        public static void buildCompleteResponse( Solver solver ){
+        DisposableIterator<IntDomainVar> it = solver.getIntVarIterator();
+            StringBuilder buffer = new StringBuilder();
+            buffer.append("(");
+            while( it.hasNext() ){
+                IntDomainVar var = it.next();
+                buffer.append(var.getName()).append(" = ");
+                buffer.append(var.getVal());
+                buffer.append(" , ");
+            }
+            buffer.delete(buffer.length()-3, buffer.length());
+            buffer.append(")");
+            buffer.append("\n");
+            System.out.println(buffer.toString());
+    }
 
 }

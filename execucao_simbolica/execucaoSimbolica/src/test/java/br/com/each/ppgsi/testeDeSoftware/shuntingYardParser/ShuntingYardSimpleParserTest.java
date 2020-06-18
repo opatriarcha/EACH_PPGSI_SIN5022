@@ -14,11 +14,11 @@ public class ShuntingYardSimpleParserTest {
     }
 
     /**
-     * Test of infixToRPN method, of class ShuntingYardSimpleParser.
+     * Test of infixToRPN method, of class ShuntingYardParserImpl.
      */
     @Test
     public void testInfixToRPN() {
-        ShuntingYardSimpleParser instance = ShuntingYardSimpleParser.getInstance();
+        ShuntingYardParserImpl instance = ShuntingYardParserImpl.getInstance();
         String[] input = "( 1 + 2 ) * ( 3 / 4 ) - ( 5 + 6 )".split(" ");       
         List<String> output = instance.infixToReversePolishNotation(Arrays.asList(input));
          
@@ -35,14 +35,14 @@ public class ShuntingYardSimpleParserTest {
     }
 
     /**
-     * Test of RPNtoDouble method, of class ShuntingYardSimpleParser.
+     * Test of RPNtoDouble method, of class ShuntingYardParserImpl.
      */
     @Test
     public void testRPNtoDouble() {
     }
 
     /**
-     * Test of main method, of class ShuntingYardSimpleParser.
+     * Test of main method, of class ShuntingYardParserImpl.
      */
     @Test
     public void testMain() {

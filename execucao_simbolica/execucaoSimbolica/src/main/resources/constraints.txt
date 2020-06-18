@@ -1,1 +1,1 @@
-#Y:3 >= X:0 + 3#
+gt ( { X [0, 10], 0 } )geq ( { Y [0, 10], INTEGER_EXPRESSION{ X [0, 10], 3 } } )

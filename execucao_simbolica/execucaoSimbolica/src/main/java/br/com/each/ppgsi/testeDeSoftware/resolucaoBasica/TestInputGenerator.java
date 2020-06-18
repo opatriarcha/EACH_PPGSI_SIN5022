@@ -1,8 +1,9 @@
 package br.com.each.ppgsi.testeDeSoftware.resolucaoBasica;
 
-import br.com.each.ppgsi.testeDeSoftware.shuntingYardParser.ShuntingYardSimpleParser;
+import br.com.each.ppgsi.testeDeSoftware.shuntingYardParser.ShuntingYardParserImpl;
 import br.usp.astExpressionParser.Commons;
 import br.usp.astExpressionParser.interpreter.ExpressionParser;
+import br.usp.astExpressionParser.interpreter.implementations.Integer.IntegerVariableExpression;
 import br.usp.astExpressionParser.lexer.Lexer;
 import choco.Choco;
 import choco.cp.model.CPModel;
@@ -98,39 +99,28 @@ public class TestInputGenerator {
             Lexer lexer = new Lexer( new ByteArrayInputStream(subject.getBytes()));
             List<Constraint> constraints = new LinkedList<>();
             List<String> lista = this.groupByConjunction(lines.get(i));
+            HashMap<String, IntegerVariableExpression> variablesHolder = new HashMap<>();
             for(String andExpression : lista ){
                 
                 List<String> tokens = lexer.tokenizeAll(andExpression);
                 printList("TOKENIZER: ", tokens);
                 //"X < 0 AND Y > 0" = (X 0 <) (Y 0 >) AND  
-                ShuntingYardSimpleParser reversePolishParser = ShuntingYardSimpleParser.getInstance();
+                ShuntingYardParserImpl reversePolishParser = ShuntingYardParserImpl.getInstance();
                 List<String> reversePolishTokens = reversePolishParser.infixToReversePolishNotation(tokens);
                 printList("Reverse Polish Notation: ", reversePolishTokens);
                 String reversePolishTokenString = reversePolishParser.toPrettyFormat(reversePolishTokens);
 
                 System.out.println("REVERSE POLISH NOTATION PRETTY FORMAT: " + reversePolishTokenString);
-                Constraint constraint = ExpressionParser.getInstance(reversePolishTokenString, variables).parse();
+                Constraint constraint = ExpressionParser.getInstance(reversePolishTokenString, variables, variablesHolder).parse();
                 
                 constraints.add(constraint);
             }
-            //Constraint finalConstraint = ExpressionParser.concatenateConstraints(constraints);// ^É um concatenador ou um AND???
             
             Model model = new CPModel() ;
             
             for( Constraint c : constraints ){
                 model.addConstraint(c);
-                //System.out.println("CONSTRAINT TESTE: "+ c.pretty());
             }
-            
-            
-            IntegerExpressionVariable x = Choco.makeIntVar("X", 0, 10);
-            IntegerExpressionVariable y = Choco.makeIntVar("Y", 0, 10);
-            IntegerConstantVariable c3 = new IntegerConstantVariable(3);
-            IntegerExpressionVariable sum = Choco.sum(x, c3);
-            Constraint c = Choco.geq(x, sum);
-            //System.out.println("CONSTRAINT ORACLE: "+ c.pretty());
-            
-           // model.addConstraints((Constraint[]) constraints.toArray());
             
             Solver solver = new CPSolver();
             solver.read(model);
@@ -231,7 +221,7 @@ public class TestInputGenerator {
     }
     
     private void buildNotFeasibleLineReport(StringBuilder builder ){
-        builder.append("Infeasible Result");
+        builder.append("Infeasible Result\n");
     }
     
     private List<String> groupByConjunction( final String line ){

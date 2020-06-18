@@ -3,6 +3,7 @@ package br.com.each.ppgsi.testeDeSoftware;
 import choco.Choco;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
+import choco.kernel.common.util.iterators.DisposableIterator;
 import choco.kernel.model.Model;
 import choco.kernel.model.constraints.Constraint;
 import choco.kernel.model.variables.integer.IntegerConstantVariable;
@@ -10,6 +11,7 @@ import choco.kernel.model.variables.integer.IntegerExpressionVariable;
 import choco.kernel.model.variables.integer.IntegerVariable;
 import choco.kernel.model.variables.real.RealVariable;
 import choco.kernel.solver.Solver;
+import choco.kernel.solver.variables.integer.IntDomainVar;
 
 public class MyFirstChocoProgram {
 
@@ -68,9 +70,26 @@ public class MyFirstChocoProgram {
 		else
 			System.out.println("Nao tem solução");
 		
+                MyFirstChocoProgram.buildCompleteResponse(s);
 		
 		
 
 	}
+        
+        public static void buildCompleteResponse( Solver solver ){
+        DisposableIterator<IntDomainVar> it = solver.getIntVarIterator();
+            StringBuilder buffer = new StringBuilder();
+            buffer.append("(");
+            while( it.hasNext() ){
+                IntDomainVar var = it.next();
+                buffer.append(var.getName()).append(" = ");
+                buffer.append(var.getVal());
+                buffer.append(" , ");
+            }
+            buffer.delete(buffer.length()-3, buffer.length());
+            buffer.append(")");
+            buffer.append("\n");
+            System.out.println(buffer.toString());
+    }
 
 }
