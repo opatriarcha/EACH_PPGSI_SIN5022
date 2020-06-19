@@ -4,15 +4,14 @@ import br.com.each.ppgsi.testeDeSoftware.lexerAnalyser.ILexerAnalyser;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import jdk.nashorn.internal.parser.Lexer;
 
 /**
  *
  * @author orlando
  */
 public class Commons {
-    public static final Integer FROM_NUMBER = -10;
-    public static final Integer TO_NUMBER = 50;
+    public static final Integer FROM_NUMBER = -1;
+    public static final Integer TO_NUMBER = 10;
     public static final String RESOLUTION_DESTINATION_PATH = "/home/orlando/software_development/workspace/each_usp/EACH_PPGSI_SIN5022/execucao_simbolica/execucaoSimbolica/src/main/resources/resolution.txt";
     public static final String COMPLETE_RESOLUTION_DESTINATION_PATH = "/home/orlando/software_development/workspace/each_usp/EACH_PPGSI_SIN5022/execucao_simbolica/execucaoSimbolica/src/main/resources/complete_resolution.txt";
     public static final String CONSTRAINTS_DESTINATION_PATH = "/home/orlando/software_development/workspace/each_usp/EACH_PPGSI_SIN5022/execucao_simbolica/execucaoSimbolica/src/main/resources/constraints.txt";
@@ -20,12 +19,12 @@ public class Commons {
     public static final Map<String, String[]> map = new HashMap<>();
     
     static{
-        map.put(ILexerAnalyser.LESS, new String[]{ILexerAnalyser.LESS_THAN_OR_EQUAL, ILexerAnalyser.EQUAL});
-        map.put(ILexerAnalyser.LESS_THAN_OR_EQUAL, new String[]{ILexerAnalyser.LESS, ILexerAnalyser.GREATER_THAN_OR_EQUAL});
-        map.put(ILexerAnalyser.GREATER, new String[]{ILexerAnalyser.GREATER_THAN_OR_EQUAL, ILexerAnalyser.EQUAL});
-        map.put(ILexerAnalyser.GREATER_THAN_OR_EQUAL, new String[]{ILexerAnalyser.GREATER, ILexerAnalyser.LESS_THAN_OR_EQUAL}); 
+        map.put(ILexerAnalyser.LESS, new String[]{ILexerAnalyser.EQUAL, ILexerAnalyser.GREATER_THAN_OR_EQUAL});
+        map.put(ILexerAnalyser.LESS_THAN_OR_EQUAL, new String[]{ILexerAnalyser.LESS, ILexerAnalyser.GREATER});
+        map.put(ILexerAnalyser.GREATER, new String[]{ILexerAnalyser.LESS, ILexerAnalyser.EQUAL});
+        map.put(ILexerAnalyser.GREATER_THAN_OR_EQUAL, new String[]{ILexerAnalyser.LESS, ILexerAnalyser.LESS}); 
         map.put(ILexerAnalyser.EQUAL, new String[]{ILexerAnalyser.GREATER, ILexerAnalyser.LESS});       
-        map.put(ILexerAnalyser.NOT_EQUAL, new String[]{ILexerAnalyser.EQUAL, ILexerAnalyser.LESS});   
+        map.put(ILexerAnalyser.NOT_EQUAL, new String[]{ILexerAnalyser.EQUAL, ILexerAnalyser.EQUAL});    
     }
     
     public static String[] getTransformedOperator( final String operator ){
@@ -50,12 +49,14 @@ public class Commons {
         if(token.contains(".")){
             Double d = Double.parseDouble(token);
             return true;
-        }else{
+        }else if( token.matches("[0-9]+")){
             Integer i = Integer.parseInt(token);
             return true;        
-        }
-        
-            
-                    
+        }        
+        return false;
+    }
+    
+    public static Integer getInteger(final String token ){
+        return Integer.parseInt(token);
     }
 }

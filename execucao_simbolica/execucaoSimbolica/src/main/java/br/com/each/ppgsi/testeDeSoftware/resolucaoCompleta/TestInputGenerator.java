@@ -41,21 +41,30 @@ public class TestInputGenerator {
     private final IResoureWriter completeResolutionWriter = new ResourceWriterImpl(Commons.COMPLETE_RESOLUTION_DESTINATION_PATH);
     private final IResoureWriter constraintWriter = new ResourceWriterImpl(Commons.CONSTRAINTS_DESTINATION_PATH);
     private final IResoureWriter boundaryWriter = new ResourceWriterImpl(Commons.BOUNDARY_ANALYSIS_DESTINATION_PATH);
-    private Map<String, List<String>>boudaryAnalysisLines = new HashMap<>(); 
+    private Map<String, List<String>>boudaryAnalysisLinesByOperator = new HashMap<>(); 
+    private Map<String, List<String>>boudaryAnalysisLinesByValue = new HashMap<>(); 
     
     public void executeFromInputFile(final String filename) {
         IResourceReader reader = ResourceReaderImpl.getInstance();
         List<String> lines = reader.read(filename);
-        this.boudaryAnalysisLines = this.makeBoundaryAnaysis(lines);
+        this.boudaryAnalysisLinesByOperator = this.makeBoundaryAnaysisByOperator(lines);
+        this.boudaryAnalysisLinesByValue = this.makeBoundaryAnalysisByValues(lines);
         
         this.cleanResources();
         ResultSetHolder holder = this.executeInternal(lines, false);
         this.writeReports(holder);
         
         List<String> newBoundarylines = new ArrayList<>();
-        newBoundarylines.add(this.boudaryAnalysisLines.get("variables").get(0));
-        this.boudaryAnalysisLines.remove("variables");
-        for(Collection<String> list : boudaryAnalysisLines.values()){
+        newBoundarylines.add(this.boudaryAnalysisLinesByOperator.get("variables").get(0));
+        
+        this.boudaryAnalysisLinesByOperator.remove("variables");
+        this.boudaryAnalysisLinesByValue.remove("variables");
+        
+        for(Collection<String> list : boudaryAnalysisLinesByOperator.values()){
+            newBoundarylines.addAll(list);
+        }
+        
+        for(Collection<String> list : boudaryAnalysisLinesByValue.values()){
             newBoundarylines.addAll(list);
         }
         
@@ -202,31 +211,7 @@ public class TestInputGenerator {
         builder.deleteCharAt(builder.length() -1);
         System.out.println(builder.toString());
     }
-//    //TODO
-//    private List<String> generateLimitValueBasedONResult(final String inputLine, final String resultLine){
-//        List<String> resultSet = new LinkedList<>();
-//        String temp = resultLine.substring(0 - resultLine.length() -1); //remove the parentesis
-//        String[] entries = temp.split(",");
-//        for( String entry : entries ){
-//            
-//        }
-//        return resultSet;
-//    }
-//    
-//    //TODO
-//    private List<String> generateLimitValueBasedONEntries(final String resultLine){
-//        List<String> resultSet = new LinkedList<>();
-//        String temp = resultLine.substring(0 - resultLine.length() -1); //remove the parentesis
-//        String[] entries = temp.split(",");
-//        for( String entry : entries ){
-//            
-//        }
-//        return resultSet;
-//    }
-    
-    
-    
-    
+   
     private List<String> groupByConjunction( final String line ){
         if( line.contains("^" ) )//deixa sem OR por enquanto
             return Arrays.asList(line.split("\\^"));
@@ -235,7 +220,7 @@ public class TestInputGenerator {
         return Arrays.asList(line);
     }
 
-    private Map<String, List<String>>  makeBoundaryAnaysis(List<String> lines) {
+    private Map<String, List<String>>  makeBoundaryAnaysisByOperator(List<String> lines) {
         Map<String, List<String>> resultSet = new HashMap<>();
         
         InstructionParser parser = InstructionParser.getinstance();
@@ -252,12 +237,15 @@ public class TestInputGenerator {
             List<String> boundaryAnalysisLines = new LinkedList<>();
             String newInputLine1 = "";
             String newInputLine2 = "";
+            String previousOperator = "";
             for(String token : tokens ){   
                 if ( Commons.isOperator(token) ){
                     String[] transformed = Commons.getTransformedOperator(token);
                     newInputLine1 = newInputLine1 + transformed[0] + " ";
                     newInputLine2 = newInputLine2 + transformed[1] + " ";
-                }else{
+                    previousOperator = token;
+                }
+                else{
                     if(token.contains("(")){
                         newInputLine1 = newInputLine1.trim() + "(";
                         newInputLine2 = newInputLine2.trim() + "(";
@@ -280,20 +268,75 @@ public class TestInputGenerator {
         }
         return resultSet;
     }
+    
+    private Map<String, List<String>>  makeBoundaryAnalysisByValues(List<String> lines) {
+        Map<String, List<String>> resultSet = new HashMap<>();
+        
+        InstructionParser parser = InstructionParser.getinstance();
+        List<String> variables = parser.parseVariables(lines.get(0));
+        resultSet.put("variables", Arrays.asList(lines.get(0)));
+        
+        for (int i = 1; i < lines.size(); i++) {
+            String subject = lines.get(i);
+            if( subject.trim().startsWith("#"))
+                continue; // Ignore commented lines
+            ILexerAnalyser lexer = new LexerAnalyserImpl( new ByteArrayInputStream(subject.getBytes()));
+            List<String> tokens = lexer.tokenizeAll(subject);
+            
+            List<String> boundaryAnalysisLines = new LinkedList<>();
+            String newInputLine1 = "";
+            String previousOperator = "";
+            int position = 0;
+            for(String token : tokens ){
+                position++;
+               
+                if( Commons.isOperator(token)){
+                    previousOperator = token;
+                }
+                if(Commons.isConstantValue(token, variables)){
+                    if( previousOperator.equals( ILexerAnalyser.LESS) || previousOperator.equals( ILexerAnalyser.LESS_THAN_OR_EQUAL)){
+                        Integer value = Commons.getInteger(token);
+                        newInputLine1 = newInputLine1 + value++ + " ";  
+                    }else if( previousOperator.equals( ILexerAnalyser.GREATER )|| previousOperator.equals( ILexerAnalyser.GREATER_THAN_OR_EQUAL)){
+                        Integer value = Commons.getInteger(token);
+                        newInputLine1 = newInputLine1 + value-- + " ";
+                    }
+                }else{
+                    if(token.contains("(")){
+                        newInputLine1 = newInputLine1.trim() + "(";
+                    }else if( token.contains(")")){
+                        newInputLine1 = newInputLine1.trim() + ")";
+                    }else{
+                        newInputLine1 = newInputLine1 + token + " ";
+                    }
+                }                
+            }
+            newInputLine1 = newInputLine1.replaceAll("AND", " ^ ");     
+            
+            boundaryAnalysisLines.add(newInputLine1.trim());
+           
+            resultSet.put(subject, boundaryAnalysisLines);
+        }
+        return resultSet;
+    }
 
     private void writeBoundaryBuffer(StringBuilder buffer, Solver solver, String line) {
         DisposableIterator<IntDomainVar> it = solver.getIntVarIterator();
              
         String originalLine = null;
-        for (Entry<String, List<String>> entry : this.boudaryAnalysisLines.entrySet()) {
+        for (Entry<String, List<String>> entry : this.boudaryAnalysisLinesByOperator.entrySet()) {
             List<String> list = entry.getValue();
             if(list.contains(line)){
                 originalLine = entry.getKey();
                 break;
             }
         }
-        buffer.append("original: ").append(originalLine).append("\n");
-        buffer.append("Modified: ").append(line).append( " " );
+        if( originalLine == null || originalLine.trim().isEmpty() )
+            originalLine = line;
+        //if( buffer.lastIndexOf(line) < 0 )
+        //buffer.append("Original: ").append(originalLine).append("\n");
+        //buffer.append("Modified: ").append(line).append( " Values: " );
+        buffer.append("Original Restriction: ").append(originalLine).append(" Values: ");//.append("\n");
 
         buffer.append("(");
         while( it.hasNext() ){
@@ -311,7 +354,7 @@ public class TestInputGenerator {
     
     private void buildNotFeasibleLineReport(StringBuilder buffer, String line ){
         String originalLine = null;
-        for (Entry<String, List<String>> entry : this.boudaryAnalysisLines.entrySet()) {
+        for (Entry<String, List<String>> entry : this.boudaryAnalysisLinesByOperator.entrySet()) {
             List<String> list = entry.getValue();
             if(list.contains(line)){
                 originalLine = entry.getKey();
