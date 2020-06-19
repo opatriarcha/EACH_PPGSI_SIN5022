@@ -1,16 +1,4 @@
-(X = 1 , Y = 4)
-(Y = 3 , X = 0)
-Infeasible Result
-(X = 1 , Y = 6)
-Infeasible Result
-(X = 1)
-(X = 10)
-(X = 1 , Y = 2)
-(X = 1 , Y = 0)
-(X = 3 , Y = 6)
-(X = 1 , Y = 3)
-Infeasible Result
-(X = 1 , Y = 4)
-(X = 1 , Y = 0)
-(X = 1 , Y = 2)
-(X = 1 , Y = 0)
+(X = 6 , Y = -10)
+(X = 5 , Y = -10)
+(X = -10 , Y = -9)
+(X = -10 , Y = -10)

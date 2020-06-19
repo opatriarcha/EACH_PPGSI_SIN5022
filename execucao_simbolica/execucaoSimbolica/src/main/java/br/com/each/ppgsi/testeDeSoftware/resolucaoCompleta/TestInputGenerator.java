@@ -20,11 +20,16 @@ import choco.kernel.solver.Solver;
 import choco.kernel.solver.constraints.SConstraint;
 import choco.kernel.solver.variables.integer.IntDomainVar;
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  *
@@ -35,23 +40,41 @@ public class TestInputGenerator {
     private final IResoureWriter resolutionWriter = new ResourceWriterImpl(Commons.RESOLUTION_DESTINATION_PATH);
     private final IResoureWriter completeResolutionWriter = new ResourceWriterImpl(Commons.COMPLETE_RESOLUTION_DESTINATION_PATH);
     private final IResoureWriter constraintWriter = new ResourceWriterImpl(Commons.CONSTRAINTS_DESTINATION_PATH);
+    private final IResoureWriter boundaryWriter = new ResourceWriterImpl(Commons.BOUNDARY_ANALYSIS_DESTINATION_PATH);
+    private Map<String, List<String>>boudaryAnalysisLines = new HashMap<>(); 
     
-    public void executeWithResolver(final String filename) {
+    public void executeFromInputFile(final String filename) {
         IResourceReader reader = ResourceReaderImpl.getInstance();
         List<String> lines = reader.read(filename);
+        this.boudaryAnalysisLines = this.makeBoundaryAnaysis(lines);
+        
         this.cleanResources();
-        ResultSetHolder holder = this.executeInternal(lines);
+        ResultSetHolder holder = this.executeInternal(lines, false);
         this.writeReports(holder);
+        
+        List<String> newBoundarylines = new ArrayList<>();
+        newBoundarylines.add(this.boudaryAnalysisLines.get("variables").get(0));
+        this.boudaryAnalysisLines.remove("variables");
+        for(Collection<String> list : boudaryAnalysisLines.values()){
+            newBoundarylines.addAll(list);
+        }
+        
+        ResultSetHolder holderBoundary = this.executeInternal(newBoundarylines, true);
+        this.writeBoundaryReport(holderBoundary);
 
     }
     
-    public ResultSetHolder executeInternal(List<String> lines){
+    public ResultSetHolder executeInternal(List<String> lines, boolean isBoundary){
         InstructionParser parser = InstructionParser.getinstance();
         List<String> variables = parser.parseVariables(lines.get(0));
         StringBuilder constraintReportBuffer = new StringBuilder();
         StringBuilder completerReportBuffer = new StringBuilder();
         StringBuilder oficialResponseBuffer = new StringBuilder();
+        StringBuilder boundaryAnalysisResponseBuffer = new StringBuilder();
         
+        if( isBoundary  ){
+            System.out.println("BOUNDARIES!!!!");
+        }
         //não é a melhor solução para tratar as constraints do tipo and do choco, mas... é o q tem pra hj
         for (int i = 1; i < lines.size(); i++) {
             String subject = lines.get(i);
@@ -88,16 +111,26 @@ public class TestInputGenerator {
             boolean hasSolution = solver.solve();
             
             if( hasSolution ){
-                this.buildOfficialResponse(oficialResponseBuffer, solver);
-                this.buildCompleteResponse(completerReportBuffer, solver);
-                this.buildConstraintsReport(constraintReportBuffer, solver, model);
+                if( isBoundary )
+                    this.writeBoundaryBuffer(boundaryAnalysisResponseBuffer, solver,lines.get(i));
+                else{
+                    this.buildOfficialResponse(oficialResponseBuffer, solver);
+                    this.buildCompleteResponse(completerReportBuffer, solver);
+                    this.buildConstraintsReport(constraintReportBuffer, solver, model);
+                }
+                
             }else{
-                this.buildNotFeasibleLineReport(completerReportBuffer);
-                this.buildNotFeasibleLineReport(oficialResponseBuffer);
-                this.buildConstraintsReport(constraintReportBuffer, solver, model);
+                if( isBoundary )
+                    this.buildNotFeasibleLineReport(boundaryAnalysisResponseBuffer,lines.get(i));
+                else{
+                    this.buildNotFeasibleLineReport(completerReportBuffer);
+                    this.buildNotFeasibleLineReport(oficialResponseBuffer);
+                    this.buildConstraintsReport(constraintReportBuffer, solver, model);
+                }
             }
         }
-        
+        if( isBoundary )
+            return new ResultSetHolder( oficialResponseBuffer.toString(), boundaryAnalysisResponseBuffer.toString(), constraintReportBuffer.toString());
         return new ResultSetHolder( oficialResponseBuffer.toString(), completerReportBuffer.toString(), constraintReportBuffer.toString());
     }
     
@@ -156,6 +189,10 @@ public class TestInputGenerator {
             //buffer.delete(buffer.length()-1, buffer.length());
            
     }
+    
+    private void buildNotFeasibleLineReport(StringBuilder buffer){
+        buffer.append("Infeasible Result\n");
+    }
     private void printList( String message, List<String> lista){
         StringBuilder builder = new StringBuilder();
         builder.append(message);
@@ -165,31 +202,30 @@ public class TestInputGenerator {
         builder.deleteCharAt(builder.length() -1);
         System.out.println(builder.toString());
     }
-    //TODO
-    private List<String> generateLimitValueBasedONResult(final String resultLine){
-        List<String> resultSet = new LinkedList<>();
-        String temp = resultLine.substring(0 - resultLine.length() -1); //remove the parentesis
-        String[] entries = temp.split(",");
-        for( String entry : entries ){
-            
-        }
-        return resultSet;
-    }
+//    //TODO
+//    private List<String> generateLimitValueBasedONResult(final String inputLine, final String resultLine){
+//        List<String> resultSet = new LinkedList<>();
+//        String temp = resultLine.substring(0 - resultLine.length() -1); //remove the parentesis
+//        String[] entries = temp.split(",");
+//        for( String entry : entries ){
+//            
+//        }
+//        return resultSet;
+//    }
+//    
+//    //TODO
+//    private List<String> generateLimitValueBasedONEntries(final String resultLine){
+//        List<String> resultSet = new LinkedList<>();
+//        String temp = resultLine.substring(0 - resultLine.length() -1); //remove the parentesis
+//        String[] entries = temp.split(",");
+//        for( String entry : entries ){
+//            
+//        }
+//        return resultSet;
+//    }
     
-    //TODO
-    private List<String> generateLimitValueBasedONEntries(final String resultLine){
-        List<String> resultSet = new LinkedList<>();
-        String temp = resultLine.substring(0 - resultLine.length() -1); //remove the parentesis
-        String[] entries = temp.split(",");
-        for( String entry : entries ){
-            
-        }
-        return resultSet;
-    }
     
-    private void buildNotFeasibleLineReport(StringBuilder builder ){
-        builder.append("Infeasible Result\n");
-    }
+    
     
     private List<String> groupByConjunction( final String line ){
         if( line.contains("^" ) )//deixa sem OR por enquanto
@@ -198,5 +234,99 @@ public class TestInputGenerator {
             return Arrays.asList(line.split("||"));
         return Arrays.asList(line);
     }
+
+    private Map<String, List<String>>  makeBoundaryAnaysis(List<String> lines) {
+        Map<String, List<String>> resultSet = new HashMap<>();
+        
+        InstructionParser parser = InstructionParser.getinstance();
+        List<String> variables = parser.parseVariables(lines.get(0));
+        resultSet.put("variables", Arrays.asList(lines.get(0)));
+        
+        for (int i = 1; i < lines.size(); i++) {
+            String subject = lines.get(i);
+            if( subject.trim().startsWith("#"))
+                continue; // Igonre commented lines
+            ILexerAnalyser lexer = new LexerAnalyserImpl( new ByteArrayInputStream(subject.getBytes()));
+            List<String> tokens = lexer.tokenizeAll(subject);
+            
+            List<String> boundaryAnalysisLines = new LinkedList<>();
+            String newInputLine1 = "";
+            String newInputLine2 = "";
+            for(String token : tokens ){   
+                if ( Commons.isOperator(token) ){
+                    String[] transformed = Commons.getTransformedOperator(token);
+                    newInputLine1 = newInputLine1 + transformed[0] + " ";
+                    newInputLine2 = newInputLine2 + transformed[1] + " ";
+                }else{
+                    if(token.contains("(")){
+                        newInputLine1 = newInputLine1.trim() + "(";
+                        newInputLine2 = newInputLine2.trim() + "(";
+                    }else if( token.contains(")")){
+                        newInputLine1 = newInputLine1.trim() + ")";
+                        newInputLine2 = newInputLine2.trim() + ")";
+                    }else{
+                        newInputLine1 = newInputLine1 + token + " ";
+                        newInputLine2 = newInputLine2 + token + " ";
+                    }
+                }
+                
+            }
+            newInputLine1 = newInputLine1.replaceAll("AND", " ^ ");     
+            newInputLine2 = newInputLine2.replaceAll("AND", " ^ ");
+            
+            boundaryAnalysisLines.add(newInputLine1.trim());
+            boundaryAnalysisLines.add(newInputLine2.trim());
+            resultSet.put(subject, boundaryAnalysisLines);
+        }
+        return resultSet;
+    }
+
+    private void writeBoundaryBuffer(StringBuilder buffer, Solver solver, String line) {
+        DisposableIterator<IntDomainVar> it = solver.getIntVarIterator();
+             
+        String originalLine = null;
+        for (Entry<String, List<String>> entry : this.boudaryAnalysisLines.entrySet()) {
+            List<String> list = entry.getValue();
+            if(list.contains(line)){
+                originalLine = entry.getKey();
+                break;
+            }
+        }
+        buffer.append("original: ").append(originalLine).append("\n");
+        buffer.append("Modified: ").append(line).append( " " );
+
+        buffer.append("(");
+        while( it.hasNext() ){
+            IntDomainVar var = it.next();
+            if(var.getName().startsWith("TMP"))
+                continue;
+            buffer.append(var.getName()).append(" = ");
+            buffer.append(var.getVal());
+            buffer.append(" , ");
+        }
+        buffer.delete(buffer.length()-3, buffer.length());
+        buffer.append(")");
+        buffer.append("\n");
+    }
+    
+    private void buildNotFeasibleLineReport(StringBuilder buffer, String line ){
+        String originalLine = null;
+        for (Entry<String, List<String>> entry : this.boudaryAnalysisLines.entrySet()) {
+            List<String> list = entry.getValue();
+            if(list.contains(line)){
+                originalLine = entry.getKey();
+                break;
+            }
+        }
+        buffer.append("original: ").append(originalLine).append("\n");
+        buffer.append("Modified: ").append(line).append( " " );
+        buffer.append("Infeasible Result\n");
+    }
+    
+
+    private void writeBoundaryReport(ResultSetHolder holderBoundary) {
+        this.boundaryWriter.writeFile(holderBoundary.getCompleteResult());
+    }
+    
    
 }

@@ -1,6 +1,7 @@
 
 package br.com.ppgsi.testeDeSoftware.Interpreter;
 
+import br.com.each.ppgsi.testeDeSoftware.commons.Commons;
 import br.com.ppgsi.testeDeSoftware.Interpreter.commons.ParserCommons;
 import br.com.ppgsi.testeDeSoftware.Interpreter.integer.IntegerConstantExpression;
 import br.com.ppgsi.testeDeSoftware.Interpreter.integer.IntegerVariableExpression;
@@ -75,7 +76,7 @@ public class ExpressionParser {
                 if(variables.containsKey(symbol))
                     variableExpression = variables.get(symbol);
                 else{
-                    variableExpression = new IntegerVariableExpression(context,  symbol, 0, 10);
+                    variableExpression = new IntegerVariableExpression(context,  symbol, Commons.FROM_NUMBER, Commons.TO_NUMBER);
                     variableExpression.interpret();
                     variables.put(symbol, (IntegerVariableExpression) variableExpression);
                 }
