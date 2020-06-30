@@ -16,7 +16,7 @@ public class InstructionParser {
    
     
     public List<String> parseVariables( final String variables ){
-        if(variables == null || variables.isBlank() || variables.isEmpty() || !variables.contains(","))
+        if(variables == null || variables.trim().isEmpty() || variables.isEmpty() || !variables.contains(","))
             return Collections.EMPTY_LIST;
         return Arrays.asList(variables.split(","));
     }

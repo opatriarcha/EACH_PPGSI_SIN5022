@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  *
  * @author orlando
  */
-@Deprecated(since="Desde que eu fiz o ShutingYard")
+@Deprecated()
 public class InfixToPolishAlgorithm {
     protected static Stack<String> convertToPolish(String in) {
     Stack<String> inputString = new Stack<>();

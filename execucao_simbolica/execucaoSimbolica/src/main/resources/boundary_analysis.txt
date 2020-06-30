@@ -1,3 +1,54 @@
-Original Restriction: (Y >= X + 3) Values: (Y = -1 , X = -1)
-Original Restriction: (Y >= X + 3) Values: (Y = -1 , X = -1)
-Original Restriction: (Y >= X + 3) Values: (Y = 2 , X = -1)
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A > B + C)
+Modified: (A < 0) ^ (B < 0) ^ (C < 0) ^ (A < B + C) Infeasible Result
+Original Restriction: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A > B + C) Values: (A = 0 , B = 0 , C = 0)
+Original Restriction: (A > 0) ^ (B <= 0) Values: (A = -1 , B = -1)
+Original Restriction: (A > 0) ^ (B <= 0) Values: (A = 0 , B = 1)
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C > A + B) ^ (A == B) ^ (B == C)
+Modified: (A < 0) ^ (B < 0) ^ (C < 0) ^ (A < B + C) ^ (B < A + C) ^ (C < A + B) ^ (A > B) ^ (B > C) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C > A + B) ^ (A == B) ^ (B == C)
+Modified: (A == 0) ^ (B == 0) ^ (C == 0) ^ (A > B + C) ^ (B > A + C) ^ (C == A + B) ^ (A < B) ^ (B < C) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A == B) ^ (B != C)
+Modified: (A < 0) ^ (B < 0) ^ (C < 0) ^ (A < B + C) ^ (B < A + C) ^ (C < A + B) ^ (A > B) ^ (B == C) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A == B) ^ (B != C)
+Modified: (A == 0) ^ (B == 0) ^ (C == 0) ^ (A > B + C) ^ (B > A + C) ^ (C > A + B) ^ (A < B) ^ (B == C) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C > A + B) ^ (A == B) ^ (B == C)
+Modified: (A < 0) ^ (B < 0) ^ (C < 0) ^ (A < B + C) ^ (B < A + C) ^ (C < A + B) ^ (A > B) ^ (B > C) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A == B) ^ (B == C)
+Modified: (A == 0) ^ (B == 0) ^ (C == 0) ^ (A > B + C) ^ (B > A + C) ^ (C > A + B) ^ (A < B) ^ (B < C) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A != B) ^ (B != C) ^ (A == C)
+Modified: (A < 0) ^ (B < 0) ^ (C < 0) ^ (A < B + C) ^ (B < A + C) ^ (C < A + B) ^ (A == B) ^ (B == C) ^ (A > C) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A != B) ^ (B != C) ^ (A == C)
+Modified: (A == 0) ^ (B == 0) ^ (C == 0) ^ (A > B + C) ^ (B > A + C) ^ (C > A + B) ^ (A == B) ^ (B == C) ^ (A < C) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B > A + C)
+Modified: (A < 0) ^ (B < 0) ^ (C < 0) ^ (A < B + C) ^ (B < A + C) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B > A + C)
+Modified: (A == 0) ^ (B == 0) ^ (C == 0) ^ (A > B + C) ^ (B == A + C) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C > A + B)
+Modified: (A < 0) ^ (B < 0) ^ (C < 0) ^ (A < B + C) ^ (B < A + C) ^ (C < A + B) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C > A + B)
+Modified: (A == 0) ^ (B == 0) ^ (C == 0) ^ (A > B + C) ^ (B > A + C) ^ (C == A + B) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A != B) ^ (B == C)
+Modified: (A < 0) ^ (B < 0) ^ (C < 0) ^ (A < B + C) ^ (B < A + C) ^ (C < A + B) ^ (A == B) ^ (B > C) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A != B) ^ (B == C)
+Modified: (A == 0) ^ (B == 0) ^ (C == 0) ^ (A > B + C) ^ (B > A + C) ^ (C > A + B) ^ (A == B) ^ (B < C) Infeasible Result
+Original Restriction: (A > 0) ^ (B > 0) ^ (C <= 0) Values: (A = -1 , B = -1 , C = -1)
+Original Restriction: (A > 0) ^ (B > 0) ^ (C <= 0) Values: (A = 0 , B = 0 , C = 1)
+Original Restriction: (A <= 0) Values: (A = -1)
+Original Restriction: (A <= 0) Values: (A = 1)
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A != B) ^ (B != C) ^ (A != C)
+Modified: (A < 0) ^ (B < 0) ^ (C < 0) ^ (A < B + C) ^ (B < A + C) ^ (C < A + B) ^ (A == B) ^ (B == C) ^ (A == C) Infeasible Result
+original: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A != B) ^ (B != C) ^ (A != C)
+Modified: (A == 0) ^ (B == 0) ^ (C == 0) ^ (A > B + C) ^ (B > A + C) ^ (C > A + B) ^ (A == B) ^ (B == C) ^ (A == C) Infeasible Result
+Original Restriction: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A > B + C) Values: (A = 3 , B = 1 , C = 1)
+Original Restriction: (A > 0) ^ (B <= 0) Values: (A = 1 , B = -1)
+original: null
+Modified: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C > A + B) ^ (A == B) ^ (B == C) Infeasible Result
+Original Restriction: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A == B) ^ (B != C) Values: (A = 1 , B = 1 , C = 2)
+Original Restriction: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A == B) ^ (B == C) Values: (A = 1 , B = 1 , C = 1)
+Original Restriction: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A != B) ^ (B != C) ^ (A == C) Values: (A = 1 , B = 2 , C = 1)
+Original Restriction: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B > A + C) Values: (A = 1 , B = 3 , C = 1)
+Original Restriction: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C > A + B) Values: (A = 1 , B = 1 , C = 3)
+Original Restriction: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A != B) ^ (B == C) Values: (A = 2 , B = 1 , C = 1)
+Original Restriction: (A > 0) ^ (B > 0) ^ (C <= 0) Values: (A = 1 , B = 1 , C = -1)
+Original Restriction: (A <= 0) Values: (A = -1)
+Original Restriction: (A > 0) ^ (B > 0) ^ (C > 0) ^ (A <= B + C) ^ (B <= A + C) ^ (C <= A + B) ^ (A != B) ^ (B != C) ^ (A != C) Values: (A = 1 , B = 2 , C = 3)
