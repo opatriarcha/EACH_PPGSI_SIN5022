@@ -22,7 +22,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
         <!--  run   mvn install:install-file -Dfile=/home/orlando/software_development/workspace/each_usp/EACH_PPGSI_SIN5022/execucao_simbolica/GeradorDadosTeste/lib/choco-solver-2.1.5.jar-DgroupId=choco -DartifactId=choco -Dversion=2.1.5 -Dpackaging=jar -->
